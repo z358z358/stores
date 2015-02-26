@@ -24,21 +24,18 @@
 						</div>
 					@endif
 
-					<form class="form-horizontal" role="form" method="POST" action="/password/email">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-
+					<h2 class="text-center">忘記密碼</h2>
+					{!! Form::open(['url' => 'password/email', 'class' => 'form-horizontal']) !!}
 						<div class="form-group">
-							<label class="col-md-4 control-label">E-Mail Address</label>
+							{!! Form::label('name', 'E-Mail:', ['class' => 'col-md-4 control-label']) !!}
 							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
+								{!! Form::email('email', null, ['class' => 'form-control']) !!}
 							</div>
 						</div>
 
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
-								<button type="submit" class="btn btn-primary">
-									Send Password Reset Link
-								</button>
+								{!! Form::submit('取得設定密碼通知信', ['class' => 'btn btn-primary form-control']) !!}
 							</div>
 						</div>
 					</form>

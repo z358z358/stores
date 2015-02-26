@@ -18,45 +18,43 @@
 						</div>
 					@endif
 
-					<form class="form-horizontal" role="form" method="POST" action="/auth/register">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
+					<h2 class="text-center">會員註冊</h2>
+					{!! Form::open(['url' => 'auth/register', 'class' => 'form-horizontal']) !!}
 
 						<div class="form-group">
-							<label class="col-md-4 control-label">Name</label>
+							{!! Form::label('name', '使用者名稱:', ['class' => 'col-md-4 control-label']) !!}
 							<div class="col-md-6">
-								<input type="text" class="form-control" name="name" value="{{ old('name') }}">
+								{!! Form::text('name', null, ['class' => 'form-control']) !!}
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-4 control-label">E-Mail Address</label>
+							{!! Form::label('name', 'E-Mail:', ['class' => 'col-md-4 control-label']) !!}
 							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
+								{!! Form::email('email', null, ['class' => 'form-control', 'placeholder' => '您的登入帳號']) !!}
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-4 control-label">Password</label>
+							{!! Form::label('password', '密碼:', ['class' => 'col-md-4 control-label']) !!}
 							<div class="col-md-6">
-								<input type="password" class="form-control" name="password">
+								{!! Form::password('password', ['class' => 'form-control']) !!}
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-4 control-label">Confirm Password</label>
+							{!! Form::label('password_confirmation', '確認密碼:', ['class' => 'col-md-4 control-label']) !!}
 							<div class="col-md-6">
-								<input type="password" class="form-control" name="password_confirmation">
+								{!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
 							</div>
 						</div>
 
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
-								<button type="submit" class="btn btn-primary">
-									Register
-								</button>
+								{!! Form::submit('註冊', ['class' => 'btn btn-primary form-control']) !!}
 							</div>
 						</div>
-					</form>
+					{!! Form::close() !!}
 				</div>
 			</div>
 		</div>
