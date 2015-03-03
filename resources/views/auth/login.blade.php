@@ -7,16 +7,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Login</div>
 				<div class="panel-body">
-					@if (count($errors) > 0)
-						<div class="alert alert-danger">
-							<strong>Whoops!</strong> There were some problems with your input.<br><br>
-							<ul>
-								@foreach ($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
-					@endif
+					@include('partials.errors')
 
 					<h2 class="text-center">會員登入</h2>
 					{!! Form::open(['url' => 'auth/login', 'class' => 'form-horizontal']) !!}
@@ -53,6 +44,13 @@
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
 								<a href="{{ url('/password/email') }}">忘記密碼?</a>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-6 col-md-offset-4">
+								<a class="social-login-btn social-facebook" href="{{ url('/auth/login-fb') }}" title="facebook登入">
+									<i class="fa fa-facebook-official fa-5x"></i>
+								</a>
 							</div>
 						</div>
 					{!! Form::close() !!}

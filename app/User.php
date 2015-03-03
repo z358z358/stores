@@ -31,4 +31,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+	/**
+	 * 對應到第三方登入
+	 * @return [type] [description]
+	 */
+	public function oauth()
+	{
+		return $this->belongsTo('App\Oauth', 'id', 'user_id');
+	}
+
 }

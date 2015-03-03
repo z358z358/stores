@@ -39,7 +39,7 @@ return [
 	|
 	*/
 
-	'timezone' => 'UTC',
+	'timezone' => 'Asia/Taipei',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -148,6 +148,7 @@ return [
 		'App\Providers\RouteServiceProvider',
 
 		'App\Providers\ViewComposerServiceProvider',
+		'Artdarek\OAuth\OAuthServiceProvider',
 
 	],
 
@@ -199,6 +200,7 @@ return [
 
 		'Form'      => 'Illuminate\Html\FormFacade',
 		'Html'      => 'Illuminate\Html\HtmlFacade',
+		'OAuth' 	=> 'Artdarek\OAuth\Facade\OAuth',
 
 	],
 

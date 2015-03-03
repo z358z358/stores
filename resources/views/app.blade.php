@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -26,5 +26,16 @@
 
 	<!-- Scripts -->
 	<script src="{{ url( elixir('js/all.js') ) }}" type="text/javascript"></script>
+
+	<script type="text/javascript">
+	    var queries = {{ json_encode(DB::getQueryLog()) }};
+	    console.log('/****************************** Database Queries ******************************/');
+	    console.log(' ');
+	    queries.forEach(function(query) {
+	        console.log('   ' + query.time + ' | ' + query.query + ' | ' + query.bindings[0]);
+	    });
+	    console.log(' ');
+	    console.log('/****************************** End Queries ***********************************/');
+	</script>
 </body>
 </html>

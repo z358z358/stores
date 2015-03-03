@@ -14,11 +14,23 @@ class Registrar implements RegistrarContract {
 	 */
 	public function validator(array $data)
 	{
+		$messages = [
+			'email.required' => 'E-Mail 為必填.',
+			'email.unique' => '此E-Mail已註冊. 請更換一個',
+			'email.email' => 'E-Mail格式錯誤.',
+
+			'name.required' => '使用者名稱 為必填.',
+
+			'password.required' => '密碼 為必填.',
+			'password.min' => '密碼至少要六個字.',
+			'password.confirmed' => '確認密碼與密碼不同 請重新輸入.',
+		];
+
 		return Validator::make($data, [
 			'name' => 'required|max:255',
 			'email' => 'required|email|max:255|unique:users',
 			'password' => 'required|confirmed|min:6',
-		]);
+		], $messages);
 	}
 
 	/**

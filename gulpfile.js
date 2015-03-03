@@ -16,6 +16,7 @@ elixir(function(mix) {
 
     mix.styles([
     	'libs/bootstrap.min.css',
+        'libs/font-awesome.min.css',
     	'libs/landing-page.css'
     ]);
 
@@ -25,4 +26,6 @@ elixir(function(mix) {
     ]);
 
     mix.version(['css/all.css', 'js/all.js']);
+
+    mix.copy('./resources/css/fonts/**', 'public/build/fonts');
 });
