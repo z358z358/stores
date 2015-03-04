@@ -6,6 +6,8 @@ use Illuminate\Contracts\Auth\Registrar as RegistrarContract;
 
 class Registrar implements RegistrarContract {
 
+	protected $rule_no = '';
+
 	/**
 	 * Get a validator for an incoming registration request.
 	 *
@@ -26,11 +28,7 @@ class Registrar implements RegistrarContract {
 			'password.confirmed' => '確認密碼與密碼不同 請重新輸入.',
 		];
 
-		return Validator::make($data, [
-			'name' => 'required|max:255',
-			'email' => 'required|email|max:255|unique:users',
-			'password' => 'required|confirmed|min:6',
-		], $messages);
+		return Validator::make($data, $this->getValidRule(), $messages);
 	}
 
 	/**
@@ -46,6 +44,38 @@ class Registrar implements RegistrarContract {
 			'email' => $data['email'],
 			'password' => bcrypt($data['password']),
 		]);
+	}
+
+	public function getValidRule()
+	{
+		$rule = [];
+		$rules = [
+			'name' => 'required|max:255',
+			'email' => 'required|email|max:255|unique:users',
+			'password' => 'required|confirmed|min:6',
+		];
+
+		switch ($this->rule_no) {
+			case 'only_name':
+				$rule['name'] = $rules['name'];
+				break;
+
+			case 'only_password':
+				$rule['password'] = $rules['password'];
+				break;
+
+			default:
+				$rule = $rules;
+				break;
+		}
+
+		return $rule;
+	}
+
+	public function setValidRule($rule_no)
+	{
+		$this->rule_no = $rule_no;
+		return $this;
 	}
 
 }

@@ -5,11 +5,10 @@
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			<div class="panel panel-default">
-				<div class="panel-heading">Register</div>
+				<div class="panel-heading">會員註冊</div>
 				<div class="panel-body">
 					@include('partials.errors')
 
-					<h2 class="text-center">會員註冊</h2>
 					{!! Form::open(['url' => 'auth/register', 'class' => 'form-horizontal']) !!}
 
 						<div class="form-group">

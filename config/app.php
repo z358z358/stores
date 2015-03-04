@@ -149,6 +149,7 @@ return [
 
 		'App\Providers\ViewComposerServiceProvider',
 		'Artdarek\OAuth\OAuthServiceProvider',
+		'Laracasts\Flash\FlashServiceProvider',
 
 	],
 
@@ -201,6 +202,7 @@ return [
 		'Form'      => 'Illuminate\Html\FormFacade',
 		'Html'      => 'Illuminate\Html\HtmlFacade',
 		'OAuth' 	=> 'Artdarek\OAuth\Facade\OAuth',
+		'Flash'		=> 'Laracasts\Flash\Flash',
 
 	],
 
