@@ -201,7 +201,7 @@ return [
 
 		'Form'      => 'Illuminate\Html\FormFacade',
 		'Html'      => 'Illuminate\Html\HtmlFacade',
-		'OAuth' 	=> 'Artdarek\OAuth\Facade\OAuth',
+		'SocialOAuth'=> 'Artdarek\OAuth\Facade\OAuth',
 		'Flash'		=> 'Laracasts\Flash\Flash',
 
 	],

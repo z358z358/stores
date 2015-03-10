@@ -65,7 +65,7 @@ class AuthController extends Controller {
 	    $code = $request->get('code');
 
 	    // get fb service
-	    $fb = \OAuth::consumer('Facebook');
+	    $fb = \SocialOAuth::consumer('Facebook');
 
 	    // if code is provided get user data and sign in
 	    if ( ! is_null($code))
