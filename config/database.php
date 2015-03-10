@@ -54,10 +54,11 @@ return [
 
 		'mysql' => [
 			'driver'    => 'mysql',
-			'host'      => env('DB_HOST', 'localhost'),
-			'database'  => env('DB_DATABASE', 'forge'),
-			'username'  => env('DB_USERNAME', 'forge'),
-			'password'  => env('DB_PASSWORD', ''),
+			'host'      => env('DB_HOST', $_SERVER['RDS_HOSTNAME']),
+			'port'		=> env('DB_PORT', $_SERVER['RDS_PORT']),
+			'database'  => env('DB_DATABASE', $_SERVER['RDS_DB_NAME']),
+			'username'  => env('DB_USERNAME', $_SERVER['RDS_DB_NAME']),
+			'password'  => env('DB_PASSWORD', $_SERVER['RDS_PASSWORD']),
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
