@@ -49,9 +49,9 @@ class AuthController extends Controller {
 	 *
 	 * @return string
 	 */
-	protected function getFailedLoginMesssage()
+	protected function getFailedLoginMessage()
 	{
-		return '帳號或密碼錯誤!';
+		return 'E-Mail或密碼錯誤!';
 	}
 
 	/**

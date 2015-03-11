@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Auth;
+use Mail;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -57,6 +58,7 @@ class SettingsController extends Controller {
 	public function edit($tab)
 	{
 		$user = Auth::user();
+		//dd($user->checkProve('email'));
 		return view('user.settings' , compact('user', 'tab'));
 	}
 
@@ -68,6 +70,7 @@ class SettingsController extends Controller {
 	 */
 	public function update($tab, Request $request)
 	{
+		$user = Auth::user();
 		switch ($tab) {
 			// 修改使用者名稱
 			case 'main':
@@ -79,14 +82,14 @@ class SettingsController extends Controller {
 					);
 				}
 
-				Auth::user()->update($request->all());
+				$user->update($request->all());
 				flash()->success('修改資料成功!');
 				break;
 
 			// 修改密碼
 			case 'password':
 				$credentials = [
-					'email' => Auth::user()->email,
+					'email' => $user->email,
 					'password' => $request->input('password_old'),
 				];
 
@@ -104,8 +107,22 @@ class SettingsController extends Controller {
 					);
 				}
 
-				Auth::user()->update($request->all());
+				$user->update($request->all());
 				flash()->success('修改密碼成功!');
+				break;
+
+			// 修改Email
+			case 'email':
+				$validator = $this->registrar->setValidRule('only_email')->validator($request->all());
+				if ($validator->fails())
+				{
+					$this->throwValidationException(
+						$request, $validator
+					);
+				}
+
+				$user->removeProve('email')->update($request->all());
+				flash()->success('修改E-mail成功!');
 				break;
 
 			default:
@@ -113,6 +130,52 @@ class SettingsController extends Controller {
 				break;
 		}
 		return redirect('settings/' . $tab . '/edit');
+	}
+
+	/**
+	 * 寄認證信
+	 * @return [type] [description]
+	 */
+	public function emailProveSend()
+	{
+		$user = Auth::user();
+
+		if($user->email)
+		{
+			$token = new \App\Token();
+			$token->type = 'email';
+			$token->user_id = $user->id;
+			$token->key = $user->email;
+			$token->token = str_random(40);
+			$token->save();
+
+			Mail::queue('emails.proveEmail', compact('user', 'token'), function($message) use ($user)
+			{
+			    $message->to($user->email, $user->name)->subject('認證信');
+			});
+			flash()->success('認證信已寄出，請前往信箱認證!');
+		}
+
+		return redirect('settings/email/edit');
+	}
+
+	/**
+	 * 檢查email認證碼
+	 * @param  [type] $email_token [description]
+	 * @return [type]              [description]
+	 */
+	public function emailProveCheck($email_token)
+	{
+		$user = Auth::user();
+		$token = \App\Token::type('email')->key($user->email)->token($email_token)->first();
+		if( !$user->checkProve('email') && $token)
+		{
+			$user->addProve('email')->save();
+			$token->delete();
+			flash()->success($user->email . '認證成功!');
+		}
+
+		return redirect('settings/email/edit');
 	}
 
 	/**

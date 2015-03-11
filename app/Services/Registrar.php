@@ -64,6 +64,10 @@ class Registrar implements RegistrarContract {
 				$rule['password'] = $rules['password'];
 				break;
 
+			case 'only_email':
+				$rule['email'] = $rules['email'];
+				break;
+
 			default:
 				$rule = $rules;
 				break;

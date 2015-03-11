@@ -1,0 +1,1 @@
+認證信: {{ route('emailProveCheck' , $token['token'] ) }}

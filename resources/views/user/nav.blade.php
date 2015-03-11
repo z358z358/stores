@@ -7,6 +7,9 @@
             <li>
                 <a href="{{ url('settings/password/edit') }}"><i class="fa fa-fw fa-key"></i> 修改密碼</a>
             </li>
+            <li>
+                <a href="{{ url('settings/email/edit') }}"><i class="fa fa-fw fa-envelope-o"></i> 修改/認證E-mail</a>
+            </li>
             <!--<li>
                 <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="demo" class="collapse">

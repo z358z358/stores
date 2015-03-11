@@ -27,6 +27,7 @@
 	<!-- Scripts -->
 	<script src="{{ url( elixir('js/all.js') ) }}" type="text/javascript"></script>
 
+	@if(Config::get('app.debug'))
 	<script type="text/javascript">
 	    var queries = {{ json_encode(DB::getQueryLog()) }};
 	    console.log('/****************************** Database Queries ******************************/');
@@ -37,5 +38,6 @@
 	    console.log(' ');
 	    console.log('/****************************** End Queries ***********************************/');
 	</script>
+	@endif
 </body>
 </html>

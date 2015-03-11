@@ -31,6 +31,25 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+	protected $prove = ['email' => 1<<0];
+
+	public function addProve($type)
+	{
+		$this->status = $this->status | ( $this->prove[$type] );
+		return $this;
+	}
+
+	public function removeProve($type)
+	{
+		$this->status = $this->status & ~( $this->prove[$type] );
+		return $this;
+	}
+
+	public function checkProve($type)
+	{
+		return ($this->status & ( $this->prove[$type] ));
+	}
+
 	/**
 	 * 對應到第三方登入
 	 * @return [type] [description]
