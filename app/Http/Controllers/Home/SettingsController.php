@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Home;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -59,7 +59,7 @@ class SettingsController extends Controller {
 	{
 		$user = Auth::user();
 		//dd($user->checkProve('email'));
-		return view('user.settings' , compact('user', 'tab'));
+		return view('home.user.settings' , compact('user', 'tab'));
 	}
 
 	/**

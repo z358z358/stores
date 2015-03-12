@@ -31,20 +31,38 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+	/**
+	 * 認證的代表數字
+	 * @var [type]
+	 */
 	protected $prove = ['email' => 1<<0];
 
+	/**
+	 * 增加某個認證
+	 * @param [type] $type [description]
+	 */
 	public function addProve($type)
 	{
 		$this->status = $this->status | ( $this->prove[$type] );
 		return $this;
 	}
 
+	/**
+	 * 移除某個認證
+	 * @param  [type] $type [description]
+	 * @return [type]       [description]
+	 */
 	public function removeProve($type)
 	{
 		$this->status = $this->status & ~( $this->prove[$type] );
 		return $this;
 	}
 
+	/**
+	 * 回傳使用者有沒有某個認證
+	 * @param  [type] $type [description]
+	 * @return bool       [description]	
+	 */
 	public function checkProve($type)
 	{
 		return ($this->status & ( $this->prove[$type] ));
@@ -56,7 +74,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	public function oauth()
 	{
-		return $this->belongsTo('App\Oauth', 'id', 'user_id');
+		return $this->belongsTo('App\Oauth');
+	}
+
+	/**
+	 * 對應到該使用者開的店
+	 * @return [type] [description]
+	 */
+	public function store()
+	{
+		return $this->hasOne('App\Store');
 	}
 
 }

@@ -10,17 +10,25 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
-Route::get('/', 'WelcomeController@index');
-
-Route::get('home', 'HomeController@index');
-
-Route::resource('settings', 'SettingsController');
-Route::get('settings/email/emailProveSend', ['as' => 'emailProveSend', 'uses' => 'SettingsController@emailProveSend']);
-Route::get('settings/email/emailProve/{email_token}', ['as' => 'emailProveCheck', 'uses' => 'SettingsController@emailProveCheck']);
-
-
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
+
+/**
+ * home
+ */
+Route::group(['namespace' => 'Home'], function()
+{
+	Route::get('/', 'HomeController@index');
+
+	Route::get('home', 'HomeController@index');
+
+	Route::resource('settings', 'SettingsController');
+	Route::get('settings/email/emailProveSend', ['as' => 'emailProveSend', 'uses' => 'SettingsController@emailProveSend']);
+	Route::get('settings/email/emailProve/{email_token}', ['as' => 'emailProveCheck', 'uses' => 'SettingsController@emailProveCheck']);
+
+	Route::resource('store', 'StoreController');
+	Route::get('{slug}/{name?}', ['as' => 'store.slug', 'uses' =>'StoreController@show']);
+});
+

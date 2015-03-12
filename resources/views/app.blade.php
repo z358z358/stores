@@ -17,6 +17,8 @@
 </head>
 <body>
 	@include('partials.nav')
+	@include('flash::message')
+    @include('partials.errors')
 
 	{{--<div class="container">--}}
 		{{-- @include('flash::message') --}}
@@ -26,6 +28,10 @@
 
 	<!-- Scripts -->
 	<script src="{{ url( elixir('js/all.js') ) }}" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		$('#flash-overlay-modal').modal();
+	</script>
 
 	@if(Config::get('app.debug'))
 	<script type="text/javascript">

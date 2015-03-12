@@ -4,14 +4,14 @@
         <div class="form-group">
             {!! Form::label('email', 'E-Mail:', ['class' => 'col-md-4 control-label']) !!}
             <div class="col-md-6">
-                {!! Form::text('email', $user->email, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+                {!! Form::text('email', null, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
             </div>
         </div>
 
         <div class="form-group">
             {!! Form::label('name', '使用者名稱:', ['class' => 'col-md-4 control-label']) !!}
                 <div class="col-md-6">
-            {!! Form::text('name', $user->name, ['class' => 'form-control']) !!}
+            {!! Form::text('name', null, ['class' => 'form-control']) !!}
             </div>
         </div>
 

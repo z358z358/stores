@@ -35,6 +35,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 			if(Auth::check())
 			{
 				$user_status = '
+				<li><a href="' . url('/store/create') . '">開店</a></li>
 				<li><a href="' . url('/settings/main') . '">HI!' . Auth::user()->name . '</a></li>
 				<li><a href="' . url('/auth/logout') . '">登出</a></li>';
 			}
