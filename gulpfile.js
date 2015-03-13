@@ -19,14 +19,23 @@ elixir(function(mix) {
         'libs/font-awesome.min.css',
     	'libs/landing-page.css',
         'my.css',
-    ]);
+    ], 'public/css/app.css')
 
-    mix.scripts([
+    .scripts([
     	'libs/jquery.js',
     	'libs/bootstrap.min.js',
-    ]);
+    ], 'public/js/all.js')
 
-    mix.version(['css/all.css', 'js/all.js']);
+    .styles([
+        'libs/select2.css',
+    ], 'public/css/select2.css')
 
-    mix.copy('./resources/css/fonts/**', 'public/build/fonts');
+    .scripts([
+        'libs/select2.js',
+        'select2_my.js',
+    ], 'public/js/select2.js')
+
+    .version(['public/css/all.css', 'public/js/all.js', 'public/css/select2.css', 'public/js/select2.js'])
+
+    .copy('./resources/css/fonts/**', 'public/build/fonts');
 });

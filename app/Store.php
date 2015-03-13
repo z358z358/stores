@@ -19,7 +19,7 @@ class Store extends Model {
 
 	public function setSlugAttribute($data)
 	{
-		$this->attributes['slug'] = str_slug($data);
+		$this->attributes['slug'] = str_slug_utf8($data);
 	}
 
 	/**

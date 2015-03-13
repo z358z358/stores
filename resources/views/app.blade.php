@@ -28,6 +28,7 @@
 
 	<!-- Scripts -->
 	<script src="{{ url( elixir('js/all.js') ) }}" type="text/javascript"></script>
+	@yield('footer')
 
 	<script type="text/javascript">
 		$('#flash-overlay-modal').modal();
