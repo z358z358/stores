@@ -188,4 +188,7 @@ body {
 .color-green {
   color:green;
 }
-/*# sourceMappingURL=all.css.map */
+
+.fb-comments, .fb-comments * {
+    width:100% !important;
+}

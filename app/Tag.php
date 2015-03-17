@@ -6,20 +6,21 @@ class Tag extends Model {
 
 	protected $fillable = ['name', 'slug'];
 
-	public function articles()
+	public function stores()
 	{
-		return $this->belongsToMany('App\Article');
+		return $this->belongsToMany('App\Store');
 	}
 
 	public function setSlugAttribute($data)
 	{
-		if(str_slug_utf8($data) != '')
+		$slug = str_slug_utf8($data);
+		if($slug != '')
 		{
-			$this->attributes['slug']=str_slug_utf8($data);
+			$this->attributes['slug'] = $slug;
 		}
 		else
 		{
-			$this->attributes['slug']=$data;
+			$this->attributes['slug'] = $data;
 		}
 	}
 

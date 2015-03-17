@@ -29,6 +29,9 @@ Route::group(['namespace' => 'Home'], function()
 	Route::get('settings/email/emailProve/{email_token}', ['as' => 'emailProveCheck', 'uses' => 'SettingsController@emailProveCheck']);
 
 	Route::resource('store', 'StoreController');
+	Route::get('store_id/{store}', ['as' => 'store.showById', 'uses' =>'StoreController@showById']);
+
+	Route::get('tag/{slug}/{name?}', ['as' => 'tag.show', 'uses' =>'TagController@show']);
 	Route::get('{slug}/{name?}', ['as' => 'store.slug', 'uses' =>'StoreController@show']);
 });
 

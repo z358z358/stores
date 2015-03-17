@@ -10,6 +10,7 @@ var elixir = require('laravel-elixir');
  | file for our application, as well as publishing vendor resources.
  |
  */
+elixir.config.sourcemaps = false;
 
 elixir(function(mix) {
     //mix.sass('app.scss', 'resources/css');
@@ -19,11 +20,11 @@ elixir(function(mix) {
         'libs/font-awesome.min.css',
     	'libs/landing-page.css',
         'my.css',
-    ], 'public/css/app.css')
+    ], 'public/css/all.css')
 
     .scripts([
     	'libs/jquery.js',
-    	'libs/bootstrap.min.js',
+    	'libs/bootstrap.js',
     ], 'public/js/all.js')
 
     .styles([
@@ -35,7 +36,27 @@ elixir(function(mix) {
         'select2_my.js',
     ], 'public/js/select2.js')
 
-    .version(['public/css/all.css', 'public/js/all.js', 'public/css/select2.css', 'public/js/select2.js'])
+    .styles([
+        'libs/sb-admin-2.css',
+    ], 'public/css/sb-admin-2.css')
+
+    .scripts([
+        'libs/sb-admin-2.js',
+    ], 'public/js/sb-admin-2.js')
+
+    .scripts([
+        'google-map_my.js',
+    ], 'public/js/google-map_my.js')
+
+    .version([
+        'css/all.css',
+        'js/all.js',
+        'css/select2.css',
+        'js/select2.js',
+        'css/sb-admin-2.css',
+        'js/sb-admin-2.js',
+        'js/google-map_my.js',
+    ])
 
     .copy('./resources/css/fonts/**', 'public/build/fonts');
 });

@@ -33,11 +33,13 @@ class StoreController extends Controller {
 	public function create()
 	{
 		$store = Auth::user()->store;
+		$tags = \App\Tag::lists('name', 'id');
+
 		if($store)
 		{
 			return redirect( route('store.edit', $store->id) );
 		}
-		return view('home.store.create');
+		return view('home.store.create' , compact('tags'));
 	}
 
 	/**
@@ -70,8 +72,7 @@ class StoreController extends Controller {
 	{
 		$store = Store::findBySlug($slug);
 
-		dd($store->toArray());
-		//
+		return view('home.store.show', compact('store'));
 	}
 
 	/**
@@ -82,7 +83,9 @@ class StoreController extends Controller {
 	 */
 	public function edit(Store $store)
 	{
-		return view('home.store.edit', compact('store'));
+		$tags = \App\Tag::lists('name', 'id');
+
+		return view('home.store.edit', compact('store', 'tags'));
 	}
 
 	/**
@@ -94,9 +97,35 @@ class StoreController extends Controller {
 	public function update(Store $store, StoreRequest $request)
 	{
 		$store->update($request->all());
+		$this->syncTags($store, $request->input('tag_list'));
 
 		flash()->success('修改商店成功');
 		return redirect( route('store.edit', $store->id) );
+	}
+
+	/**
+	 * 同步tag  若沒有 則新增
+	 * @param  Store  $store [description]
+	 * @param  array  $tags  [description]
+	 * @return [type]        [description]
+	 */
+	public function syncTags(Store $store, $tags)
+	{
+		$tags = is_array($tags) ? $tags : [];
+		foreach ($tags as $key => $tag) {
+			if(!is_numeric($tag))
+			{
+				$newTag = \App\Tag::create(['name' => $tag, 'slug' => $tag]);
+				$tags[$key] = $newTag->id;
+			}
+		}
+
+		$store->tags()->sync($tags);
+	}
+
+	public function showById(Store $store)
+	{
+		return redirect( route('store.slug', $store->slug) );
 	}
 
 	/**

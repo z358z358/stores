@@ -7,7 +7,6 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">會員註冊</div>
 				<div class="panel-body">
-					@include('partials.errors')
 
 					{!! Form::open(['url' => 'auth/register', 'class' => 'form-horizontal']) !!}
 

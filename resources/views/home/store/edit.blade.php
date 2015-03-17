@@ -9,7 +9,8 @@
             	<div class="panel panel-default">
 				    <div class="panel-heading">修改商店資料</div>
 				    <div class="panel-body">
-                		@include('home.store.form', ['formSubmitText' => '修改'])
+				    		<p class="text-center">您的商店網址:<a href="{{ url('/' . $store->slug) }}">{{ url('/' . $store->slug) }}</a></p>
+						    @include('home.store.form', ['formSubmitText' => '修改'])
                 	</div>
                 	<div class="form-group">
 			            <div class="col-md-6 col-md-offset-4">

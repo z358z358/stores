@@ -17,9 +17,34 @@ class Store extends Model {
 		return $query->whereSlug($slug)->firstOrFail();
 	}
 
+	/**
+	 * slug存到資料庫的時候 轉成slug
+	 * @param [type] $data [description]
+	 */
 	public function setSlugAttribute($data)
 	{
 		$this->attributes['slug'] = str_slug_utf8($data);
+	}
+
+	/**
+	 * select2使用
+	 * @return [type] [description]
+	 */
+	public function getTagListAttribute()
+	{
+		return $this->tags->lists('id');
+	}
+
+	/**
+	 * 把介紹的文字加入連結
+	 * @return [type] [description]
+	 */
+	public function getInfoHtmlAttribute()
+	{
+		return nl2br(preg_replace(
+              "~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~",
+              "<a target=\"_blank\" href=\"\\0\">\\0</a>",
+              $this->attributes['info']));
 	}
 
 	/**
@@ -31,4 +56,12 @@ class Store extends Model {
 		return $this->belongsTo('App\User');
 	}
 
+	/**
+	 * 對應的Tag
+	 * @return [type] [description]
+	 */
+	public function tags()
+	{
+		return $this->belongsToMany('App\Tag');
+	}
 }

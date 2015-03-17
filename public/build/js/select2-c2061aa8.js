@@ -5209,8 +5209,8 @@ $(function() {
 
 	$(".select2").select2({
 		placeholder: '選擇一個標籤',
-		tags: true
+		tags: true,
+		width: '100%'
 	});
 
 });
-//# sourceMappingURL=select2.js.map

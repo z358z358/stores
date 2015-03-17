@@ -31,8 +31,21 @@
 	@yield('footer')
 
 	<script type="text/javascript">
-		$('#flash-overlay-modal').modal();
+		$(function() {
+			$('#flash-overlay-modal').modal();
+		});
 	</script>
+
+	<!-- fb -->
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&appId={{ Config::get('oauth-5-laravel.consumers.Facebook.client_id') }}&version=v2.0";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+	<!-- end fb -->
 
 	@if(Config::get('app.debug'))
 	<script type="text/javascript">
