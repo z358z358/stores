@@ -42,8 +42,8 @@ class CreateTagsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('tags');
 		Schema::drop('store_tag');
+		Schema::drop('tags');
 	}
 
 }

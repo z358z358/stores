@@ -4,7 +4,9 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Laravel</title>
+	<meta name="description" content="@yield('description', '預設描述')">
+	<link rel="shortcut icon" href="{{ url('/favicon.ico') }}" />
+	<title>@yield('title', '預設標題')</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ url( elixir('css/all.css') ) }}">
 

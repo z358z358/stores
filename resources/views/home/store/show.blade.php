@@ -1,5 +1,13 @@
 @extends('app')
 
+@section('title')
+{{ $store->name }}
+@stop
+
+@section('description')
+{{ $store->info_desc }}
+@stop
+
 @section('content')
 <div id="wrapper">
     <div id="page-wrapper">
@@ -23,6 +31,13 @@
                     <div class="panel-heading">商店簡介</div>
                     <div class="panel-body">
                         <p>{!! $store->info_html !!}</p>
+                        @if ($store->address)
+                            <p>地址:{{ $store->address }}
+                            @if ($store->lat && $store->lng)
+                                <a href="http://maps.google.com/maps?ll={{$store->lat}},{{$store->lng}}&&q=loc:{{$store->lat}},{{$store->lng}}"><i title="前往Google Map" class="fa fa-map-marker"></i></a>
+                                </p>
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>
@@ -43,12 +58,29 @@
         </div>
         <!-- /row -->
 
+         <!-- row -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                <div class="panel-heading">分享</div>
+                    <div class="panel-body">
+                        <div class="text-center">
+                            <a href="{{ $share['facebook'] }}" class="btn btn-social-icon btn-facebook"><i class="fa fa-facebook"></i></a>
+                            <a href="{{ $share['gplus'] }}" class="btn btn-social-icon btn-google-plus"><i class="fa fa-google-plus"></i></a>
+                            <a href="{{ $share['twitter'] }}" class="btn btn-social-icon btn-twitter"><i class="fa fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /row -->
+
         <!-- row -->
         <div class="row">
             <div class="col-lg-6">
                 <div class="panel panel-default">
+                <div class="panel-heading">Facebook留言</div>
                     <div class="panel-body">
-                        <h3>Facebook留言</h3>
                         <div class="fb-comments" data-href="{{ route('store.showById', $store->id) }}" data-numposts="5" data-colorscheme="light" data-width="100%"></div>
                     </div>
                 </div>
@@ -56,8 +88,8 @@
 
             <div class="col-lg-6">
                 <div class="panel panel-default">
+                <div class="panel-heading">Disqus留言</div>
                     <div class="panel-body">
-                        <h3>Disqus留言</h3>
                         <div id="disqus_thread"></div>
                     </div>
                 </div>

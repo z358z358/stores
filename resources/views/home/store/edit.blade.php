@@ -1,5 +1,9 @@
 @extends('app')
 
+@section('title')
+修改商店資料
+@stop
+
 @section('content')
 <div class="container-fluid">
     <div class="row">

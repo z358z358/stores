@@ -19,6 +19,11 @@ class CreateStoresTable extends Migration {
 			$table->string('name')->unique()->index();
 			$table->text('info');
 			$table->string('slug')->unique()->index();
+			$table->string('address');
+			$table->double('lat');
+			$table->double('lng');
+
+			$table->index(array('lat', 'lng'));
 
 			$table->timestamps();
 

@@ -1,5 +1,9 @@
 @extends('app')
 
+@section('title')
+會員登入
+@stop
+
 @section('content')
 <div class="container-fluid">
 	<div class="row">

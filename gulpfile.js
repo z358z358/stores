@@ -1,4 +1,23 @@
 var elixir = require('laravel-elixir');
+var fs = require('fs');
+
+var deleteFolderRecursive = function(path) {
+  if( fs.existsSync(path) ) {
+    fs.readdirSync(path).forEach(function(file,index){
+      var curPath = path + "/" + file;
+      if(fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+};
+
+deleteFolderRecursive('public/css');
+deleteFolderRecursive('public/js');
+deleteFolderRecursive('public/build');
 
 /*
  |--------------------------------------------------------------------------
@@ -17,6 +36,7 @@ elixir(function(mix) {
 
     mix.styles([
     	'libs/bootstrap.min.css',
+        'libs/bootstrap-social.css',
         'libs/font-awesome.min.css',
     	'libs/landing-page.css',
         'my.css',

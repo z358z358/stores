@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreRequest;
 use App\Store;
 use Auth;
+use Share;
 
 class StoreController extends Controller {
 
@@ -56,6 +57,7 @@ class StoreController extends Controller {
 		}
 
 		$store = Auth::user()->store()->create($request->all());
+		$this->syncTags($store, $request->input('tag_list'));
 
 		flash()->overlay('商店已建立!', 'Good Job');
 		return redirect(route('store.slug', $store->slug));
@@ -71,8 +73,9 @@ class StoreController extends Controller {
 	public function show($slug)
 	{
 		$store = Store::findBySlug($slug);
+		$share = Share::load(route('store.showById', $store->id), $store->info_desc)->services('facebook', 'gplus', 'twitter');
 
-		return view('home.store.show', compact('store'));
+		return view('home.store.show', compact('store', 'share'));
 	}
 
 	/**
@@ -113,11 +116,12 @@ class StoreController extends Controller {
 	{
 		$tags = is_array($tags) ? $tags : [];
 		foreach ($tags as $key => $tag) {
-			if(!is_numeric($tag))
+			if(is_numeric($tag) && \App\Tag::find($tag))
 			{
-				$newTag = \App\Tag::create(['name' => $tag, 'slug' => $tag]);
-				$tags[$key] = $newTag->id;
+				continue;
 			}
+			$newTag = \App\Tag::create(['name' => $tag, 'slug' => $tag]);
+			$tags[$key] = $newTag->id;
 		}
 
 		$store->tags()->sync($tags);

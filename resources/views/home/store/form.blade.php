@@ -26,15 +26,31 @@
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group row">
+  <div class="col-lg-6 col-md-offset-4">
+    <div class="input-group">
+      {!! Form::text('address', null, ['class' => 'form-control', 'id' => 'pac-input', 'placeholder' =>'輸入地址']) !!}
+      <span class="input-group-btn">
+        <button id="refresh-map" class="btn btn-default" type="button">更新地圖</button>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
+<!--<div class="input-group">
     {!! Form::label('address', '地址:', ['class' => 'col-md-4 control-label']) !!}
-    <div class="col-md-6">
-        {!! Form::text('address', null, ['class' => 'form-control controls', 'id' => 'pac-input', 'placeholder' =>'輸入地址']) !!}
+    <div class="col-md-4">
+        {!! Form::text('address', null, ['class' => 'form-control', 'id' => 'pac-input', 'placeholder' =>'輸入地址']) !!}
+        <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+   </span>
     </div>
-</div>
+</div>-->
+{!! Form::hidden('lat', null, ['id' => 'lat']) !!}
+{!! Form::hidden('lng', null, ['id' => 'lng']) !!}
 
 <div class="form-group">
-    <div id="map-canvas" class="col-md-8" style="height: 500px"></div>
+    <div id="map-canvas" class="col-md-7 col-md-offset-3" style="height: 400px"></div>
 </div>
 
 <div class="form-group">

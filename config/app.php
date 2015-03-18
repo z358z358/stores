@@ -150,6 +150,7 @@ return [
 		'App\Providers\ViewComposerServiceProvider',
 		'Artdarek\OAuth\OAuthServiceProvider',
 		'Laracasts\Flash\FlashServiceProvider',
+		'Chencha\Share\ShareServiceProvider',
 
 	],
 
@@ -203,6 +204,7 @@ return [
 		'Html'      => 'Illuminate\Html\HtmlFacade',
 		'SocialOAuth'=> 'Artdarek\OAuth\Facade\OAuth',
 		'Flash'		=> 'Laracasts\Flash\Flash',
+		'Share' => 'Chencha\Share\ShareFacade',
 
 	],
 

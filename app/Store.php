@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model {
 
-	protected $fillable = ['name', 'info', 'slug'];
+	protected $fillable = ['name', 'info', 'slug', 'address', 'lat', 'lng'];
 
 	/**
 	 * 從slug找商店
@@ -45,6 +45,15 @@ class Store extends Model {
               "~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~",
               "<a target=\"_blank\" href=\"\\0\">\\0</a>",
               $this->attributes['info']));
+	}
+
+	/**
+	 * meta description用
+	 * @return [type] [description]
+	 */
+	public function getInfoDescAttribute()
+	{
+		return str_limit($this->attributes['info'], 100, '...');
 	}
 
 	/**

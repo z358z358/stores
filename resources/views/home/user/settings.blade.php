@@ -1,5 +1,9 @@
 @extends('app')
 
+@section('title')
+會員中心
+@stop
+
 @section('content')
 <div class="container-fluid">
     @include('home.user.nav')

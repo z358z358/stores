@@ -1,5 +1,9 @@
 @extends('app')
 
+@section('title')
+重設密碼
+@stop
+
 @section('content')
 <div class="container-fluid">
 	<div class="row">
