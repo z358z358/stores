@@ -1,6 +1,7 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Store extends Model {
 
@@ -57,6 +58,21 @@ class Store extends Model {
 	}
 
 	/**
+	 * 有沒有設定item
+	 * @return [type] [description]
+	 */
+	public function getHasItemAttribute()
+	{
+		return is_null($this->items);
+	}
+
+
+	public function getOwnerAttribute()
+	{
+		return (Auth::user() && $this->attributes['user_id'] == Auth::user()->id);
+	}
+
+	/**
 	 * 對應到該使用者
 	 * @return [type] [description]
 	 */
@@ -72,5 +88,14 @@ class Store extends Model {
 	public function tags()
 	{
 		return $this->belongsToMany('App\Tag');
+	}
+
+	/**
+	 * 對應的Item
+	 * @return [type] [description]
+	 */
+	public function items()
+	{
+		return $this->hasMany('App\Item');
 	}
 }

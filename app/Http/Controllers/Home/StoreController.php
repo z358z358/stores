@@ -70,9 +70,8 @@ class StoreController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($slug)
+	public function show(Store $store)
 	{
-		$store = Store::findBySlug($slug);
 		$share = Share::load(route('store.showById', $store->id), $store->info_desc)->services('facebook', 'gplus', 'twitter');
 
 		return view('home.store.show', compact('store', 'share'));

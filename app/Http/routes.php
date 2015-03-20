@@ -32,6 +32,11 @@ Route::group(['namespace' => 'Home'], function()
 	Route::get('store_id/{store}', ['as' => 'store.showById', 'uses' =>'StoreController@showById']);
 
 	Route::get('tag/{slug}/{name?}', ['as' => 'tag.show', 'uses' =>'TagController@show']);
-	Route::get('{slug}/{name?}', ['as' => 'store.slug', 'uses' =>'StoreController@show']);
+
+	Route::get('menuEdit/{store}', ['as' => 'menu.edit', 'uses' => 'MenuController@edit']);
+	Route::post('menuEdit/{store}', ['as' => 'menu.update', 'uses' => 'MenuController@update']);
+
+	Route::get('{storeSlug}/menu', ['as' => 'menu.show', 'uses' => 'MenuController@show']);
+	Route::get('{storeSlug}/{name?}', ['as' => 'store.slug', 'uses' =>'StoreController@show']);
 });
 

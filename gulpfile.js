@@ -1,23 +1,6 @@
 var elixir = require('laravel-elixir');
-var fs = require('fs');
-
-var deleteFolderRecursive = function(path) {
-  if( fs.existsSync(path) ) {
-    fs.readdirSync(path).forEach(function(file,index){
-      var curPath = path + "/" + file;
-      if(fs.lstatSync(curPath).isDirectory()) { // recurse
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(path);
-  }
-};
-
-deleteFolderRecursive('public/css');
-deleteFolderRecursive('public/js');
-deleteFolderRecursive('public/build');
+require('laravel-elixir-clean');
+require("laravel-elixir-react");
 
 /*
  |--------------------------------------------------------------------------
@@ -32,41 +15,52 @@ deleteFolderRecursive('public/build');
 elixir.config.sourcemaps = false;
 
 elixir(function(mix) {
-    //mix.sass('app.scss', 'resources/css');
 
-    mix.styles([
-    	'libs/bootstrap.min.css',
+    mix
+
+    .clean()
+
+    .react("react_my.jsx")
+
+    .styles([
+    	'libs/bootstrap.css',
         'libs/bootstrap-social.css',
-        'libs/font-awesome.min.css',
+        'libs/font-awesome.css',
     	'libs/landing-page.css',
         'my.css',
-    ], 'public/css/all.css')
+    ], 'public/css/all.css', 'resources/assets/css')
+
+    .styles([
+        'libs/select2.css',
+    ], 'public/css/select2.css', 'resources/assets/css')
+
+    .styles([
+        'libs/sb-admin-2.css',
+    ], 'public/css/sb-admin-2.css', 'resources/assets/css')
 
     .scripts([
     	'libs/jquery.js',
     	'libs/bootstrap.js',
-    ], 'public/js/all.js')
-
-    .styles([
-        'libs/select2.css',
-    ], 'public/css/select2.css')
+    ], 'public/js/all.js', 'resources/assets/js')
 
     .scripts([
         'libs/select2.js',
         'select2_my.js',
-    ], 'public/js/select2.js')
-
-    .styles([
-        'libs/sb-admin-2.css',
-    ], 'public/css/sb-admin-2.css')
+    ], 'public/js/select2.js', 'resources/assets/js')
 
     .scripts([
         'libs/sb-admin-2.js',
-    ], 'public/js/sb-admin-2.js')
+    ], 'public/js/sb-admin-2.js', 'resources/assets/js')
 
     .scripts([
         'google-map_my.js',
-    ], 'public/js/google-map_my.js')
+    ], 'public/js/google-map_my.js', 'resources/assets/js')
+
+    .scripts([
+        'libs/react.js',
+        '../../../public/js/react_my.js',
+    ], 'public/js/react.js', 'resources/assets/js')
+
 
     .version([
         'css/all.css',
@@ -76,7 +70,8 @@ elixir(function(mix) {
         'css/sb-admin-2.css',
         'js/sb-admin-2.js',
         'js/google-map_my.js',
+        'js/react.js',
     ])
 
-    .copy('./resources/css/fonts/**', 'public/build/fonts');
+    .copy('./resources/assets/css/fonts', 'public/build/fonts')
 });

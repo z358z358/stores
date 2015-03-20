@@ -28,6 +28,11 @@ class RouteServiceProvider extends ServiceProvider {
 		{
 			return \App\Store::findOrFail($id);
 		});
+
+		$router->bind('storeSlug', function($slug)
+		{
+			return \App\Store::findBySlug($slug);
+		});
 	}
 
 	/**
