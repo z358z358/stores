@@ -14,13 +14,16 @@ class CreateItemsTable extends Migration {
 	{
 		Schema::create('items', function(Blueprint $table)
 		{
-			$table->increments('id');
+			//$table->increments('id');
 			$table->integer('store_id')->unsigned();
+			$table->integer('item_id')->unsigned();
 			$table->string('name');
 			$table->double('price');
 			$table->integer('status')->unsigned();
 
 			$table->timestamps();
+
+			$table->primary(array('store_id', 'item_id'));
 
 			$table->foreign('store_id')
 				->references('id')

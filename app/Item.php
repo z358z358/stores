@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model {
 
+	protected $fillable = ['name', 'price', 'item_id'];
+
 	/**
 	 * 對應的Store
 	 * @return [type] [description]

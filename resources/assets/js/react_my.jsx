@@ -1,36 +1,50 @@
-var TodoList = React.createClass({
+/**
+ * @jsx React.DOM
+ */
+
+var MenuRow = React.createClass({
   render: function() {
-    var createItem = function(itemText) {
-      return <li>{itemText}</li>;
-    };
-    return <ul>{this.props.items.map(createItem)}</ul>;
+    return (
+        <tr>
+            <td>{this.props.name}</td>
+            <td>{this.props.price}</td>
+        </tr>
+    );
   }
 });
-var TodoApp = React.createClass({
+
+var MenuList = React.createClass({
+  render: function() {
+    var rows = [];
+    this.props.items.forEach(function(item) {
+        rows.push(<MenuRow name={item.name} price={item.price} />);
+    }.bind(this));
+    return {rows};
+  }
+});
+
+
+var MenuApp = React.createClass({
   getInitialState: function() {
-    return {items: [], text: ''};
-  },
-  onChange: function(e) {
-    this.setState({text: e.target.value});
-  },
-  handleSubmit: function(e) {
-    e.preventDefault();
-    var nextItems = this.state.items.concat([this.state.text]);
-    var nextText = '';
-    this.setState({items: nextItems, text: nextText});
+    return {items: [{name:'測試1',price:'123'},{name:'測試2',price:'456'}]};
   },
   render: function() {
     return (
-      <div>
-        <h3>TODO</h3>
-        <TodoList items={this.state.items} />
-        <form onSubmit={this.handleSubmit}>
-          <input onChange={this.onChange} value={this.state.text} />
-          <button>{'Add #' + (this.state.items.length + 1)}</button>
-        </form>
+      <div className="dataTable_wrapper">
+        <table className="table table-striped table-bordered table-hover" id="dataTables-example">
+        <thead>
+            <tr>
+                <th>名稱</th>
+                <th>價錢</th>
+            </tr>
+        </thead>
+        <tbody>
+          <MenuList items={this.state.items} />
+        </tbody>
+        </table>
       </div>
     );
   }
 });
 
-React.render(<TodoApp />, document.getElementById('react'));
+React.render(<MenuApp />, document.getElementById('react'));

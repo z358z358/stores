@@ -98,7 +98,7 @@ class AuthController extends Controller {
 	        	$user = $oauth->user;
 	        }
 
-	        Auth::login($user);
+	        Auth::login($user, true);
 	        return redirect()->intended($this->redirectPath());
 	    }
 	    // if not ask for permission first
