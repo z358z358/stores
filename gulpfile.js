@@ -1,6 +1,6 @@
 var elixir = require('laravel-elixir');
 require('laravel-elixir-clean');
-require("laravel-elixir-react");
+//require("laravel-elixir-react");
 
 /*
  |--------------------------------------------------------------------------
@@ -20,7 +20,7 @@ elixir(function(mix) {
 
     .clean()
 
-    .react("react_my.jsx")
+    //.react("react_my.jsx")
 
     .styles([
     	'libs/bootstrap.css',
@@ -57,9 +57,15 @@ elixir(function(mix) {
     ], 'public/js/google-map_my.js', 'resources/assets/js')
 
     .scripts([
-        'libs/react.js',
-        '../../../public/js/react_my.js',
-    ], 'public/js/react.js', 'resources/assets/js')
+        'libs/jquery-ui.js',
+        'libs/jquery.tmpl.js',
+        'jquery-ui_my.js',
+    ], 'public/js/jquery-ui.js', 'resources/assets/js')
+
+    //.scripts([
+    //    'libs/react.js',
+    //    '../../../public/js/react_my.js',
+    //], 'public/js/react.js', 'resources/assets/js')
 
 
     .version([
@@ -70,7 +76,8 @@ elixir(function(mix) {
         'css/sb-admin-2.css',
         'js/sb-admin-2.js',
         'js/google-map_my.js',
-        'js/react.js',
+        //'js/react.js',
+        'js/jquery-ui.js',
     ])
 
     .copy('./resources/assets/css/fonts', 'public/build/fonts')

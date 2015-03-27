@@ -1,50 +1,155 @@
-/**
- * @jsx React.DOM
- */
-
 var MenuRow = React.createClass({
+  getInitialState: function() {
+    return {item: this.props.item};
+  },
+
+  onChange: function(e){
+    var nowItem = {
+      name:this.refs.name.getDOMNode().value,
+      price:this.refs.price.getDOMNode().value,
+      item_id:this.props.item.item_id
+    };
+    this.setState({item: nowItem});
+  },
+
+  handleDeleteRow: function() {
+    this.props.onRowDelete( this.props.index );
+    return false;
+  },
+
+  handleCancel: function() {
+    this.props.onCancel( this.props.index );
+    return false;
+  },
+
+  handleEditRow: function() {
+    this.props.onEditRow( this.props.index );
+    return false;
+  },
+
+  handleSaveRow: function() {
+    this.checkRowValue();
+    this.props.onSaveRow( this.props.index, this.state.item );
+    return false;
+  },
+
+  checkRowValue: function() {
+    var nowItem = this.state.item;
+    nowItem.price = isNaN(Number(nowItem.price)) ? 0 : Number(nowItem.price);
+    this.setState({item: nowItem});
+  },
+
   render: function() {
+    var editClass = this.props.item.edit ? '' : 'hide' ;
+    var showClass = this.props.item.edit ? 'hide' : '' ;
+
     return (
-        <tr>
-            <td>{this.props.name}</td>
-            <td>{this.props.price}</td>
+      <tbody>
+        <tr className={showClass}>
+          <td>{this.props.item.name}</td>
+          <td>{this.props.item.price}</td>
+          <td>
+            <input type="button" onClick={this.handleEditRow} value="修改" />
+            <input type="button" onClick={this.handleDeleteRow} value="刪除" />
+          </td>
         </tr>
+
+        <tr className={editClass}>
+          <td><input name={"items[" + this.props.index + "][name]"} ref="name"  onChange={this.onChange} value={this.state.item.name} placeholder="名稱" /></td>
+          <td><input name={"items[" + this.props.index + "][price]"} ref="price" onChange={this.onChange} value={this.state.item.price} placeholder="價錢" /></td>
+          <td>
+            <input type="hidden" name={"items[" + this.props.index + "][item_id]"} value={this.props.item.item_id} />
+            <input type="button" onClick={this.handleSaveRow} value="確定" />
+            <input type="button" onClick={this.handleCancel} value="取消" />
+          </td>
+        </tr>
+
+      </tbody>
     );
   }
 });
 
 var MenuList = React.createClass({
+  getInitialState: function() {
+    var max = 0;
+    this.props.items.items.forEach(function(item){
+      var item_id = parseInt(item.item_id);
+      max = (item_id > max)?item_id:max;
+    }.bind(max));
+
+    return {items: this.props.items.items, max:max};
+  },
+
+  onRowDelete: function(itemIndex) {
+    this.state.items.splice(itemIndex, 1);
+    this.setState({ items: this.state.items });
+  },
+
+  onCancel: function(itemIndex) {
+    this.state.items[itemIndex].edit = false;
+    this.setState({ items: this.state.items });
+  },
+
+  onEditRow: function(itemIndex) {
+    this.state.items[itemIndex].edit = true;
+    this.setState({ items: this.state.items });
+  },
+
+  onSaveRow: function(itemIndex, newItem) {
+    this.state.items[itemIndex] = newItem;
+    this.state.items[itemIndex].edit = false;
+    this.setState({ items: this.state.items });
+  },
+
+  handleNewRow: function() {
+    var item_id = this.state.max;
+    item_id++;
+    this.setState({ max: item_id });
+    this.setState({ items: this.state.items.concat({item_id:item_id}) });
+  },
+
   render: function() {
     var rows = [];
-    this.props.items.forEach(function(item) {
-        rows.push(<MenuRow name={item.name} price={item.price} />);
+    this.state.items.forEach(function(item, index) {
+        rows.push(
+          <MenuRow
+          item={item}
+          index={index}
+          onEditRow={this.onEditRow}
+          onRowDelete={this.onRowDelete}
+          onCancel={this.onCancel} 
+          onSaveRow={this.onSaveRow}  />
+        );
     }.bind(this));
-    return {rows};
-  }
-});
-
-
-var MenuApp = React.createClass({
-  getInitialState: function() {
-    return {items: [{name:'測試1',price:'123'},{name:'測試2',price:'456'}]};
-  },
-  render: function() {
     return (
-      <div className="dataTable_wrapper">
-        <table className="table table-striped table-bordered table-hover" id="dataTables-example">
-        <thead>
+      <div>
+      <table className="table table-striped table-bordered table-hover" id="dataTables-example">
+        <thead>{this.state.max}
             <tr>
                 <th>名稱</th>
                 <th>價錢</th>
+                <th></th>
             </tr>
         </thead>
-        <tbody>
-          <MenuList items={this.state.items} />
-        </tbody>
-        </table>
+        {rows}
+      </table>
+      <input type="button" onClick={this.handleNewRow} value="新增商品" />
       </div>
     );
   }
 });
 
-React.render(<MenuApp />, document.getElementById('react'));
+
+var MenuApp = React.createClass({
+  render: function() {
+    return (
+      <div className="dataTable_wrapper">
+          <MenuList items={this.props.items} />
+      </div>
+    );
+  }
+});
+
+
+var ITEMS = { type:'edit' , items:{!! json_encode($items) !!} };
+React.render(<MenuApp items={ITEMS} />, document.getElementById('react'));

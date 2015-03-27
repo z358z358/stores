@@ -81,9 +81,12 @@ class MenuController extends Controller {
 		$store->items()->delete();
 		$items = [];
 
-		foreach ($request->input('items') as $item)
+		if($request->input('items')) 
 		{
-			$items[] = new Item($item);
+			foreach ($request->input('items') as $item)
+			{
+				$items[] = new Item($item);
+			}
 		}
 
 		//Item::where('store_id', $store->id)->whereNotIn('id', $audiochannel_ids)->delete();

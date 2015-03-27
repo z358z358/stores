@@ -14,7 +14,18 @@
 				    <div class="panel-body">
             {!! Form::model($store, ['route' => ['menu.update', $store->id], 'method' => 'post', 'class' => 'form-horizontal']) !!}
 
-						    <div id="react"></div>
+						    <div class="dataTable_wrapper">
+                    <table id="item-table" class="item-table sortable table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>名稱</th>
+                            <th>單價</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                  </table>
+                  <input id="item-add-new" type="button" value="新增商品" />
+                </div>
                 {!! Form::submit('送出', ['class' => 'btn btn-primary form-control']) !!}
             {!! Form::close() !!}
             </div>
@@ -26,167 +37,101 @@
 @endsection
 
 @section('footer')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.1/react.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.1/JSXTransformer.js"></script>
-<script type="text/jsx">
-/**
- * @jsx React.DOM
- */
+<script id="item-tbody" type="text/x-handlebars-template">
+<tbody data-item-id="${item_id}" class="ui-state-default">
+  <tr class="item-tr-show">
+    <td id="item-${item_id}-name">${name}</td>
+    <td id="item-${item_id}-price">${price}</td>
+    <td>
+      <input class="bind-button edit-button" data-action="edit" type="button" value="修改" />
+      <input class="bind-button" data-action="del" type="button" value="刪除" />
+    </td>
+  </tr>
 
-var MenuRow = React.createClass({
-  getInitialState: function() {
-    return {item: this.props.item};
-  },
+  <tr class="item-tr-edit">
+    <td><input type="text" name="items[${item_id}][name]" data-pre-value="${name}" data-show-id="item-${item_id}-name" value="${name}" placeholder="名稱" /></td>
+    <td><input type="number" name="items[${item_id}][price]" data-pre-value="${price}" data-show-id="item-${item_id}-price" value="${price}" placeholder="單價" /></td>
+    <td>
+      <input type="hidden" name="items[${item_id}][item_id]" value="${item_id}" />
+      <input type="hidden" name="items[${item_id}][status]" value="${status}" />
+      <input class="bind-button" data-action="edit_done" type="button" value="確定" />
+      <input class="bind-button" data-action="edit_cancel" type="button" value="取消" />
+    </td>
+  </tr>
+</tbody>
+</script>
+<script src="{{ url( elixir('js/jquery-ui.js') ) }}" type="text/javascript"></script>
+<script type="text/javascript">
+$(function() {
+  var items = {!! json_encode($items) !!};
+  var max = 0;
 
-  onChange: function(e){
-    var nowItem = {
-      name:this.refs.name.getDOMNode().value,
-      price:this.refs.price.getDOMNode().value,
-      item_id:this.props.item.item_id
-    };
-    this.setState({item: nowItem});
-  },
+  items.forEach(function(item){
+     var item_id = parseInt(item.item_id);
+     max = (item_id > max)?item_id:max;
+   }.bind(max));
 
-  handleDeleteRow: function() {
-    this.props.onRowDelete( this.props.index );
-    return false;
-  },
+  $.tmpl( $("#item-tbody").html(), items )
+      .appendTo( "#item-table" );
 
-  handleCancel: function() {
-    this.props.onCancel( this.props.index );
-    return false;
-  },
+  $( ".sortable" ).sortable();
+  $( ".sortable" ).disableSelection();
 
-  handleEditRow: function() {
-    this.props.onEditRow( this.props.index );
-    return false;
-  },
+  // 新增商品
+  $("#item-add-new").click(function(){
+    max++;
+    var tmp_item = {item_id:max, status:100};
+    $.tmpl( $("#item-tbody").html(), tmp_item )
+      .appendTo( "#item-table" );
+    $("#item-table tbody:last .edit-button").trigger('click');
+  });
 
-  handleSaveRow: function() {
-    this.checkRowValue();
-    this.props.onSaveRow( this.props.index, this.state.item );
-    return false;
-  },
+  // 綁定按鈕
+  $("#item-table").on("click", ".bind-button", function(){
+    var action = $(this).data("action");
+    var tbody = $(this).closest("tbody");
+    switch(action) {
+      // 編輯
+      case "edit":
+        tbody.find(".item-tr-show").hide();
+        tbody.find(".item-tr-edit").show();
+      break;
 
-  checkRowValue: function() {
-    var nowItem = this.state.item;
-    nowItem.price = isNaN(Number(nowItem.price)) ? 0 : Number(nowItem.price);
-    this.setState({item: nowItem});
-  },
+      // 編輯確定
+      case "edit_done":
+        tbody.find(".item-tr-show").show();
+        tbody.find(".item-tr-edit").hide();
 
-  render: function() {
-    var editClass = this.props.item.edit ? '' : 'hide' ;
-    var showClass = this.props.item.edit ? 'hide' : '' ;
+        tbody.find("input").each( function(){
+          $(this).data("pre-value", $(this).val());
+          var tmpId = $(this).data("show-id");
+          if(tmpId){
+            $("#"+tmpId).html($(this).val());
+          }
+        });
 
-    return (
-      <tbody>
-        <tr className={showClass}>
-          <td>{this.props.item.name}</td>
-          <td>{this.props.item.price}</td>
-          <td>
-            <input type="button" onClick={this.handleEditRow} value="修改" />
-            <input type="button" onClick={this.handleDeleteRow} value="刪除" />
-          </td>
-        </tr>
+      break;
 
-        <tr className={editClass}>
-          <td><input name={"items[" + this.props.index + "][name]"} ref="name"  onChange={this.onChange} value={this.state.item.name} placeholder="名稱" /></td>
-          <td><input name={"items[" + this.props.index + "][price]"} ref="price" onChange={this.onChange} value={this.state.item.price} placeholder="價錢" /></td>
-          <td>
-            <input type="hidden" name={"items[" + this.props.index + "][item_id]"} value={this.props.item.item_id} />
-            <input type="button" onClick={this.handleSaveRow} value="確定" />
-            <input type="button" onClick={this.handleCancel} value="取消" />
-          </td>
-        </tr>
+      // 編輯取消
+      case "edit_cancel":
+        tbody.find(".item-tr-show").show();
+        tbody.find(".item-tr-edit").hide();
 
-      </tbody>
-    );
-  }
+        tbody.find("input").each( function(){
+          var preValue = $(this).data("pre-value");
+          if(preValue) $(this).val(preValue);
+        });
+
+      break;
+
+      // 刪除
+      case "del":
+        tbody.remove();
+      break;
+    }
+    console.log(action , tbody);
+  });
+
 });
-
-var MenuList = React.createClass({
-  getInitialState: function() {
-    var max = 0;
-    this.props.items.items.forEach(function(item){
-      var item_id = parseInt(item.item_id);
-      max = (item_id > max)?item_id:max;
-    }.bind(max));
-
-    return {items: this.props.items.items, max:max};
-  },
-
-  onRowDelete: function(itemIndex) {
-    this.state.items.splice(itemIndex, 1);
-    this.setState({ items: this.state.items });
-  },
-
-  onCancel: function(itemIndex) {
-    this.state.items[itemIndex].edit = false;
-    this.setState({ items: this.state.items });
-  },
-
-  onEditRow: function(itemIndex) {
-    this.state.items[itemIndex].edit = true;
-    this.setState({ items: this.state.items });
-  },
-
-  onSaveRow: function(itemIndex, newItem) {
-    this.state.items[itemIndex] = newItem;
-    this.state.items[itemIndex].edit = false;
-    this.setState({ items: this.state.items });
-  },
-
-  handleNewRow: function() {
-    var item_id = this.state.max;
-    item_id++;
-    this.setState({ max: item_id });
-    this.setState({ items: this.state.items.concat({item_id:item_id}) });
-  },
-
-  render: function() {
-    var rows = [];
-    this.state.items.forEach(function(item, index) {
-        rows.push(
-          <MenuRow
-          item={item}
-          index={index}
-          onEditRow={this.onEditRow}
-          onRowDelete={this.onRowDelete}
-          onCancel={this.onCancel} 
-          onSaveRow={this.onSaveRow}  />
-        );
-    }.bind(this));
-    return (
-      <div>
-      <table className="table table-striped table-bordered table-hover" id="dataTables-example">
-        <thead>{this.state.max}
-            <tr>
-                <th>名稱</th>
-                <th>價錢</th>
-                <th></th>
-            </tr>
-        </thead>
-        {rows}
-      </table>
-      <input type="button" onClick={this.handleNewRow} value="新增商品" />
-      </div>
-    );
-  }
-});
-
-
-var MenuApp = React.createClass({
-  render: function() {
-    return (
-      <div className="dataTable_wrapper">
-          <MenuList items={this.props.items} />
-      </div>
-    );
-  }
-});
-
-
-var ITEMS = { type:'edit' , items:{!! json_encode($items) !!} };
-React.render(<MenuApp items={ITEMS} />, document.getElementById('react'));
 </script>
 @stop

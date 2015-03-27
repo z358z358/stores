@@ -8654,3 +8654,7 @@ body {
 .fb-comments, .fb-comments * {
     width:100% !important;
 }
+
+.item-table .item-tr-edit {
+	display: none;
+ }
