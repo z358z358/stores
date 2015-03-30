@@ -64,7 +64,7 @@ class MenuController extends Controller {
 	 */
 	public function edit(Store $store)
 	{
-		$items = $store->items->toArray();
+		$items = $store->items()->orderBy('status', 'asc')->get();
 
 		return view('home.menu.edit', compact('store', 'items'));
 	}
@@ -80,12 +80,16 @@ class MenuController extends Controller {
 		//dd($request->all());
 		$store->items()->delete();
 		$items = [];
+		$count = 1;
 
 		if($request->input('items')) 
 		{
 			foreach ($request->input('items') as $item)
 			{
+				$inc = ($item['status'] >= 0)? 1: -1;
+				$item['status'] = $count*$inc;
 				$items[] = new Item($item);
+				$count++;
 			}
 		}
 

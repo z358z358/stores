@@ -19,7 +19,7 @@ class CreateItemsTable extends Migration {
 			$table->integer('item_id')->unsigned();
 			$table->string('name');
 			$table->double('price');
-			$table->integer('status')->unsigned();
+			$table->integer('status');
 
 			$table->timestamps();
 

@@ -8657,4 +8657,12 @@ body {
 
 .item-table .item-tr-edit {
 	display: none;
- }
+}
+
+#item-table .del-button, #item-table .off-button{
+ 	display: none;
+}
+
+#item-table-remove .edit-button, #item-table-remove .on-button{
+ 	display: none;
+}
