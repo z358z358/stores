@@ -63,7 +63,7 @@ class Store extends Model {
 	 */
 	public function getHasItemAttribute()
 	{
-		return is_null($this->items);
+		return !is_null($this->items);
 	}
 
 

@@ -25,3 +25,7 @@ body {
 #item-table-remove .edit-button, #item-table-remove .on-button{
  	display: none;
 }
+
+#menu-item-table .menu-all-hidden, #chose-table .menu-chose-hidden{
+	display: none;
+}

@@ -51,9 +51,11 @@ class MenuController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show()
+	public function show(Store $store)
 	{
+		$items = $store->items()->orderBy('status', 'asc')->get();
 
+		return view('home.menu.show', compact('store', 'items'));
 	}
 
 	/**

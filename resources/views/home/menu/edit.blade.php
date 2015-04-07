@@ -57,10 +57,10 @@
     <td id="item-${item_id}-name">${name}</td>
     <td id="item-${item_id}-price">${price}</td>
     <td>
-      <input class="bind-button edit-button" data-action="edit" type="button" value="修改" />
-      <input class="bind-button on-button" data-action="remove" type="button" value="下架" />
-      <input class="bind-button off-button" data-action="ready" type="button" value="上架" />
-      <input class="bind-button del-button" data-action="del" type="button" value="刪除" />
+      <input class="bind-button edit-button btn btn-default" data-action="edit" type="button" value="修改" />
+      <input class="bind-button on-button btn btn-default" data-action="remove" type="button" value="下架" />
+      <input class="bind-button off-button btn btn-default" data-action="ready" type="button" value="上架" />
+      <input class="bind-button del-button btn btn-danger" data-action="del" type="button" value="刪除" />
     </td>
   </tr>
 
@@ -70,8 +70,8 @@
     <td>
       <input type="hidden" name="items[${item_id}][item_id]" value="${item_id}" />
       <input class="item-stauts" type="hidden" name="items[${item_id}][status]" value="${status}" />
-      <input class="bind-button" data-action="edit_done" type="button" value="確定" />
-      <input class="bind-button" data-action="edit_cancel" type="button" value="取消" />
+      <input class="bind-button btn btn-default" data-action="edit_done" type="button" value="確定" />
+      <input class="bind-button btn btn-default" data-action="edit_cancel" type="button" value="取消" />
     </td>
   </tr>
 </tbody>
@@ -157,7 +157,6 @@ $(function() {
         tbody.remove();
       break;
     }
-    console.log(action , tbody);
   });
 
   function onAndOff(){

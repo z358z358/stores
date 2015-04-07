@@ -34,8 +34,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		{
 			if(Auth::check())
 			{
-				$user_status = '
-				<li><a href="' . url('/store/create') . '">開店</a></li>
+				$store = Auth::user()->store;
+				if($store)
+				{
+					$user_status = '<li><a href="' . route('store.slug', $store->slug) . '">店的頁面</a></li>';
+				}
+				$user_status .= '
+				<li><a href="' . url('/store/create') . '">開店/修改店</a></li>
 				<li><a href="' . url('/settings/main') . '">HI!' . Auth::user()->name . '</a></li>
 				<li><a href="' . url('/auth/logout') . '">登出</a></li>';
 			}
