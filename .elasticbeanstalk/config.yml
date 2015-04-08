@@ -1,10 +1,10 @@
 branch-defaults:
   master:
-    environment: dev-env
+    environment: stores-env
 global:
-  application_name: test
-  default_ec2_keyname: onininon
-  default_platform: 64bit Amazon Linux 2014.09 v1.2.0 running PHP 5.5
+  application_name: stores
+  default_ec2_keyname: null
+  default_platform: 64bit Amazon Linux 2015.03 v1.3.0 running PHP 5.5
   default_region: ap-northeast-1
   profile: eb-cli
   sc: git
