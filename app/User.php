@@ -86,4 +86,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this->hasOne('App\Store');
 	}
 
+	/**
+	 * 對應到該使用者的訂單
+	 * @return [type] [description]
+	 */
+	public function orders()
+	{
+		return $this->hasMany('App\Order');
+	}
+
 }

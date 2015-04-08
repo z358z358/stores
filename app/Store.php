@@ -63,7 +63,7 @@ class Store extends Model {
 	 */
 	public function getHasItemAttribute()
 	{
-		return !is_null($this->items);
+		return !is_null($this->items->first());
 	}
 
 
@@ -97,5 +97,14 @@ class Store extends Model {
 	public function items()
 	{
 		return $this->hasMany('App\Item');
+	}
+
+	/**
+	 * 對應的Order
+	 * @return [type] [description]
+	 */
+	public function orders()
+	{
+		return $this->hasMany('App\Order');
 	}
 }

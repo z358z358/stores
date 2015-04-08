@@ -23,6 +23,7 @@
   </div>
 
   <div role="tabpanel" class="tab-pane fade" id="chose" aria-labelledby="chose-tab">
+    {!! Form::model($store, ['route' => ['menu.submit', $store->slug], 'method' => 'post', 'class' => 'form-horizontal']) !!}
     <table id="chose-table" class="menu-item-table table table-striped table-bordered table-hover">
       <thead>
         <tr>
@@ -34,7 +35,10 @@
       </thead>
     </table>
     <div id="chose-info"></div>
+    {!! Form::submit('結帳', ['class' => 'btn btn-primary form-control']) !!}
+    {!! Form::close() !!}
   </div>
+
 </div>
 @endsection
 
@@ -50,13 +54,17 @@
       <input class="bind-button btn btn-default" data-action="count" data-value="1" type="button" value="+1" />
       <input class="bind-button btn btn-default one-more" data-action="count" data-value="-1" type="button" value="-1" />
       <input class="bind-button btn btn-default three-more" data-action="count" data-value="-3" type="button" value="-3" />
+      <input type="hidden" name="item_id[]" value="${item_id}" />
+      <input type="hidden" name="count[]" value="${count}" />
+      <input type="hidden" name="price[]" value="${price}" />
+
     </td>  
   </tr>
 </tbody>
 </script>
 <script src="{{ url( elixir('js/jquery-ui.js') ) }}" type="text/javascript"></script>
 <script type="text/javascript">
-//$(function() {
+$(function() {
   var items = {!! json_encode($items) !!};
   var chose = {};
 
@@ -113,6 +121,6 @@ console.log(items);
 
   }
 
-//});
+});
 </script>
 @stop

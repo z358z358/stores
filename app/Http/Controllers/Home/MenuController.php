@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Store;
 use App\Item;
+use Auth;
 
 class MenuController extends Controller {
 
@@ -100,6 +101,22 @@ class MenuController extends Controller {
 
 		flash()->success('修改菜單成功');
 		return redirect( route('menu.edit', $store->id) );
+	}
+
+	/**
+	 * 建立訂單
+	 * @param  Store   $store   [description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function submit(Store $store, Request $request)
+	{
+		$order = New \App\Order;
+		$order->content = json_encode( array_except($request->all(), ['_token']) );
+		$order->store_id = $store->id;
+		$order->user_id = Auth::user()->id;
+		$order->save();
+
 	}
 
 	/**

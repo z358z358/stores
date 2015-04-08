@@ -35,6 +35,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 			if(Auth::check())
 			{
 				$store = Auth::user()->store;
+				$user_status = '';
 				if($store)
 				{
 					$user_status = '<li><a href="' . route('store.slug', $store->slug) . '">店的頁面</a></li>';
