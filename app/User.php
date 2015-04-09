@@ -35,7 +35,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 * 認證的代表數字
 	 * @var [type]
 	 */
-	protected $prove = ['email' => (1<<0) ];
+	protected $prove = ['email' => 1 ];
 
 	/**
 	 * 增加某個認證
