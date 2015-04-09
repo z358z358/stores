@@ -37,6 +37,8 @@ Route::group(['namespace' => 'Home'], function()
 
 	Route::get('menuEdit/{store}', ['as' => 'menu.edit', 'uses' => 'MenuController@edit']);
 	Route::post('menuEdit/{store}', ['as' => 'menu.update', 'uses' => 'MenuController@update']);
+	Route::get('menuAttr/{store}', ['as' => 'menu.attr.edit', 'uses' => 'MenuController@attrEdit']);
+	Route::post('menuAttr/{store}', ['as' => 'menu.attr.update', 'uses' => 'MenuController@attrUpdate']);
 
 	Route::get('{storeSlug}/menu', ['as' => 'menu.show', 'uses' => 'MenuController@show']);
 	Route::post('{storeSlug}/menu/submit', ['as' => 'menu.submit', 'uses' => 'MenuController@submit']);		

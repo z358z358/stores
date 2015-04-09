@@ -81,26 +81,79 @@ class MenuController extends Controller {
 	public function update(Store $store, Request $request)
 	{
 		//dd($request->all());
-		$store->items()->delete();
 		$items = [];
 		$count = 1;
 
 		if($request->input('items')) 
 		{
-			foreach ($request->input('items') as $item)
+			foreach ($request->input('items') as $data)
 			{
-				$inc = ($item['status'] >= 0)? 1: -1;
-				$item['status'] = $count*$inc;
-				$items[] = new Item($item);
+				$inc = ($data['status'] >= 0)? 1: -1;
+				$data['status'] = $count*$inc;
+				$item = $store->items()->findOrNew($data['id']);
+				$item->fill($data);
+				$item->save();
+				$items[] = $item->id;
 				$count++;
 			}
 		}
 
-		//Item::where('store_id', $store->id)->whereNotIn('id', $audiochannel_ids)->delete();
-		$store->items()->saveMany($items);
+		$store->items()->whereNotIn('id', $items)->delete();
 
 		flash()->success('修改菜單成功');
 		return redirect( route('menu.edit', $store->id) );
+	}
+
+	/**
+	 * 商品屬性編輯
+	 * @param  Store  $store [description]
+	 * @return [type]        [description]
+	 */
+	public function attrEdit(Store $store)
+	{
+		$item_list = $store->items()->lists('name', 'id');
+		return view('home.menu.attrEdit', compact('store', 'item_list'));
+	}
+
+	public function attrUpdate(Store $store, Request $request)
+	{
+		//dd($request->all());
+		$items = [];
+		foreach($request->get('attr') as $data)
+		{
+			if(isset($data['id']))
+			{
+				$attr_id = $data['id'];
+			}
+			else
+			{
+				$attr = ['name' => $data['name']];
+				$newAttr = \App\Attr::create(['content' => json_encode($attr)]);
+				$attr_id = $newAttr->id;
+			}
+
+			if(isset($data['item_id']))
+			{
+				foreach($data['item_id'] as $item_id)
+				{
+					$items[$item_id][] = $attr_id;
+				}
+			}
+
+		}
+
+		foreach($items as $item_id => $attr_ids)
+		{
+			$item = $store->items()->find($item_id);
+			if($item)
+			{
+				$item->attrs()->sync($attr_ids);
+			}
+		}
+
+		flash()->success('修改菜單成功');
+		return redirect( route('menu.attr.edit', $store->id) );
+
 	}
 
 	/**
@@ -116,7 +169,6 @@ class MenuController extends Controller {
 		$order->store_id = $store->id;
 		$order->user_id = Auth::user()->id;
 		$order->save();
-
 	}
 
 	/**

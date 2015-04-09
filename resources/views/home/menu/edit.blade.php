@@ -1,11 +1,12 @@
 @extends('app')
 
 @section('title')
-修改商店資料
+修改商店商品
 @stop
 
 @section('content')
-<div class="container-fluid">            
+<div class="container-fluid">  
+  @include('home.menu.nav')          
   {!! Form::model($store, ['route' => ['menu.update', $store->id], 'method' => 'post', 'class' => 'form-horizontal']) !!}
   <div class="row">
     <div class="col-md-12">
@@ -69,6 +70,7 @@
     <td><input type="number" name="items[${item_id}][price]" data-pre-value="${price}" data-show-id="item-${item_id}-price" value="${price}" placeholder="單價" /></td>
     <td>
       <input type="hidden" name="items[${item_id}][item_id]" value="${item_id}" />
+      <input type="hidden" name="items[${item_id}][id]" value="${id}" />
       <input class="item-stauts" type="hidden" name="items[${item_id}][status]" value="${status}" />
       <input class="bind-button btn btn-default" data-action="edit_done" type="button" value="確定" />
       <input class="bind-button btn btn-default" data-action="edit_cancel" type="button" value="取消" />

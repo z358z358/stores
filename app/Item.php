@@ -15,4 +15,13 @@ class Item extends Model {
 		return $this->belongsTo('App\Store');
 	}
 
+	/**
+	 * 有許多attrs
+	 * @return [type] [description]
+	 */
+	public function attrs()
+	{
+		return $this->belongsToMany('App\Attr');
+	}
+
 }

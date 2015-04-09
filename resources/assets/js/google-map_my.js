@@ -28,7 +28,7 @@ function initialize() {
         setInput(event.latLng.lat(),event.latLng.lng());
     });
 
-    if($('#lat').val() && $('#lng').val()){
+    if($('#lat').val() && $('#lat').val() != "0" && $('#lng').val() && $('#lng').val() != "0"){
         myLatlng = new google.maps.LatLng($('#lat').val(),$('#lng').val());
         map.setCenter(myLatlng);
         map.setZoom(17);  // Why 17? Because it looks good.
@@ -80,7 +80,11 @@ function initialize() {
 $(function() {
     $('#refresh-map').click(function(){
         var address = $('#pac-input').val();
-        if(!address) return false;
+        if(!address) {
+            marker.setVisible(false);
+            setInput(0,0);
+            return false;
+        }
 
         geocoder.geocode( { 'address': address}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
