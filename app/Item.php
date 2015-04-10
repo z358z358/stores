@@ -19,9 +19,9 @@ class Item extends Model {
 	 * 有許多attrs
 	 * @return [type] [description]
 	 */
-	public function attrs()
+	public function itemAttrs()
 	{
-		return $this->belongsToMany('App\Attr');
+		return $this->belongsToMany('App\ItemAttr', 'item_attr_item');
 	}
 
 }

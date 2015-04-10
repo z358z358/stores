@@ -48,6 +48,19 @@
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));</script>
 	<!-- end fb -->
+
+	@if(Config::get('app.debug'))
+	<script type="text/javascript">
+	    var queries = {!! json_encode(DB::getQueryLog()) !!};
+	    console.log('/****************************** Database Queries ******************************/');
+	    console.log(' ');
+	    queries.forEach(function(query) {
+	        console.log('   ' + query.time + ' | ' + query.query + ' | ' + query.bindings[0]);
+	    });
+	    console.log(' ');
+	    console.log('/****************************** End Queries ***********************************/');
+	</script>
+	@endif
 	
 </body>
 </html>

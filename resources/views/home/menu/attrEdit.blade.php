@@ -49,7 +49,9 @@
   <tr class="attr-tr-edit">
     <td><input type="text" name="attr[${id}][name]" data-pre-value="${name}" data-show-id="item-${id}-name" value="${name}" placeholder="名稱" /></td>
     <td>
-      {!! Form::select('attr[${id}][item_id][]', $item_list, null, ['class' => 'form-control select2NoTags', 'multiple']) !!}
+      {!! Form::select('attr[${id}][item_id][]', $item_list, null, ['data-pre-value' => '${item_id}', 'class' => 'attr-item-select form-control select2NoTags', 'multiple']) !!}
+
+      <input type="hidden" name="attr[${id}][attr_id]" value="${attr_id}" />
       <input class="bind-button btn btn-default" data-action="edit_done" type="button" value="確定" />
       <input class="bind-button btn btn-default" data-action="edit_cancel" type="button" value="取消" />
     </td>
@@ -57,8 +59,25 @@
 </tbody>
 </script>
 <script type="text/javascript">
-$(function() {  
+//$(function() {  
   var max = 0;
+  var attrs = {!! json_encode($attrs) !!};
+
+  attrs.forEach(function(attr){
+     var attr_id = parseInt(attr.id);
+     max = (attr_id > max)?attr_id:max;
+   }.bind(max));
+
+  $.tmpl( $("#attr-tbody").html(), attrs ).appendTo( "#attr-table" );
+  $(".attr-item-select").each(function(){
+    var selected = ($(this).data('pre-value') + "").split(",");
+
+    if(selected){
+      for(var key in selected){
+        $(this).find("option[value='" + selected[key] + "']").attr("selected","true");
+      }
+    }
+  });
 
   // 新增商品
   $("#attr-add-new").click(function(){
@@ -79,6 +98,6 @@ $(function() {
     });
   }
 
-});
+//});
 </script>
 @stop

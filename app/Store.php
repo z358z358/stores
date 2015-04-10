@@ -107,4 +107,13 @@ class Store extends Model {
 	{
 		return $this->hasMany('App\Order');
 	}
+
+	/**
+	 * 對應的Item
+	 * @return [type] [description]
+	 */
+	public function itemAttrs()
+	{
+		return $this->hasMany('App\itemAttr');
+	}
 }
