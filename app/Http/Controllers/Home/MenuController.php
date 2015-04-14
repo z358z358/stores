@@ -118,7 +118,9 @@ class MenuController extends Controller {
 		foreach($store->itemAttrs()->get() as $attr)
 		{
 			$content = $attr->content_array;
-			$attrs[] = ['id' => $attr->id, 'attr_id' => $attr->id, 'item_id' => $content['item_id'], 'name' => $content['name'] ];
+			$content['id'] = $contentp['attr_id'] = $attr->id;
+
+			$attrs[] = $content;
 		}
 		//dd($attrs);
 		return view('home.menu.attrEdit', compact('store', 'item_list', 'attrs'));
@@ -136,14 +138,16 @@ class MenuController extends Controller {
 			foreach($request->get('attr') as $data)
 			{
 				$data['item_id'] = isset($data['item_id'])? $data['item_id'] : [];
-				if(isset($data['attr_id']) && is_numeric($data['attr_id']))
+				$attr = $store->itemAttrs()->find($data['attr_id']);
+				if($attr)
 				{
-					$attr_id = $data['attr_id'];
+					$attr->content = $this->attrContentJson($data);
+					$attr->save();
+					$attr_id = $attr->id;
 				}
 				else
 				{
-					$attr = ['name' => $data['name'], 'item_id' => $data['item_id']];
-					$newAttr = \App\ItemAttr::create(['store_id' => $store->id, 'content' => json_encode($attr)]);
+					$newAttr = \App\ItemAttr::create(['store_id' => $store->id, 'content' => $this->attrContentJson($data)]);
 					$attr_id = $newAttr->id;
 				}
 
@@ -159,21 +163,18 @@ class MenuController extends Controller {
 		}
 
 		// item sync attrs
-		foreach($items as $item_id => $attr_ids)
+		foreach($store->items()->whereIn('id', array_keys($items))->with('itemAttrs')->get() as $item)
 		{
-			$item = $store->items()->find($item_id);
-			if($item)
-			{
-				$item->itemAttrs()->sync($attr_ids);
-			}
+			$item->itemAttrs()->sync($items[$item->id]);
 		}
 
-		// 清掉沒attr的
+		// 清掉沒attr的item
 		foreach($store->items()->whereNotIn( 'id', array_keys($items) )->with('itemAttrs')->get() as $item)
 		{
 			$item->itemAttrs()->sync([]);
 		}
 
+		// 清掉沒post的attr
 		$store->itemAttrs()->whereNotIn('id', $itemAttrs)->delete();
 
 		flash()->success('修改菜單成功');
@@ -205,6 +206,32 @@ class MenuController extends Controller {
 	public function destroy($id)
 	{
 		//
+	}
+
+	/**
+	 * content前置處理
+	 * @param  Array  $data [description]
+	 * @return [type]       [description]
+	 */
+	public function attrContentJson(Array $data)
+	{
+		$content = [];
+		$option = [];
+
+		if(is_array($data['option']))
+		{
+			foreach ($data['option']['name'] as $key => $name) {
+				$option[$name] = $data['option']['price'][$key];
+			}
+		}
+
+		$content = [
+			'name' => $data['name'], 
+			'item_id' => $data['item_id'],
+			'max' => $data['max'],
+			'option' => $option,
+		];
+		return json_encode($content);
 	}
 
 }

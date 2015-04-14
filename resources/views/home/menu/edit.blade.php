@@ -14,7 +14,7 @@
         <div class="panel-heading">修改商品</div>
         <div class="panel-body">
           <div class="dataTable_wrapper">
-            <table id="item-table" class="item-table sortable table table-striped table-bordered table-hover">
+            <table id="item-table" class="item-table form-table sortable table table-striped table-bordered table-hover">
               <thead>
                 <tr>
                   <th>名稱</th>
@@ -32,7 +32,7 @@
       <div class="panel-heading">已下架的商品</div>
       <div class="panel-body">
         <div class="dataTable_wrapper">
-          <table id="item-table-remove" class="item-table sortable table table-striped table-bordered table-hover">
+          <table id="item-table-remove" class="item-table form-table sortable table table-striped table-bordered table-hover">
             <thead>
               <tr>
                 <th>名稱</th>
@@ -54,7 +54,7 @@
 @section('footer')
 <script id="item-tbody" type="text/x-handlebars-template">
 <tbody data-item-id="${item_id}" class="item-tbody ui-state-default">
-  <tr class="item-tr-show">
+  <tr class="item-tr-show tr-show">
     <td id="item-${item_id}-name">${name}</td>
     <td id="item-${item_id}-price">${price}</td>
     <td>
@@ -65,7 +65,7 @@
     </td>
   </tr>
 
-  <tr class="item-tr-edit">
+  <tr class="item-tr-edit tr-edit">
     <td><input type="text" name="items[${item_id}][name]" data-pre-value="${name}" data-show-id="item-${item_id}-name" value="${name}" placeholder="名稱" /></td>
     <td><input type="number" name="items[${item_id}][price]" data-pre-value="${price}" data-show-id="item-${item_id}-price" value="${price}" placeholder="單價" /></td>
     <td>
@@ -111,14 +111,14 @@ $(function() {
     switch(action) {
       // 編輯
       case "edit":
-        tbody.find(".item-tr-show").hide();
-        tbody.find(".item-tr-edit").show();
+        tbody.find(".tr-show").hide();
+        tbody.find(".tr-edit").show();
       break;
 
       // 編輯確定
       case "edit_done":
-        tbody.find(".item-tr-show").show();
-        tbody.find(".item-tr-edit").hide();
+        tbody.find(".tr-show").show();
+        tbody.find(".tr-edit").hide();
 
         tbody.find("input").each( function(){
           $(this).data("pre-value", $(this).val());
@@ -132,8 +132,8 @@ $(function() {
 
       // 編輯取消
       case "edit_cancel":
-        tbody.find(".item-tr-show").show();
-        tbody.find(".item-tr-edit").hide();
+        tbody.find(".tr-show").show();
+        tbody.find(".tr-edit").hide();
 
         tbody.find("input").each( function(){
           var preValue = $(this).data("pre-value");
