@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model {
 
-	protected $fillable = ['name', 'price', 'item_id', 'status'];
+	protected $fillable = ['name', 'price', 'status'];
 
 	/**
 	 * 對應的Store

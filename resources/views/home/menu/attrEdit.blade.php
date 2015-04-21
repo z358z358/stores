@@ -39,16 +39,16 @@
 <script id="attr-tbody" type="text/x-handlebars-template">
 <tbody id="attr-tbody-${id}" class="attr-tbody" data-id="${id}">
   <tr class="attr-tr-show tr-show">
-    <td id="attr-${id}-name" class="attr-td-name">${name}</td>
-    <td>
+    <td id="attr-${id}-name" class="attr-td-name col-md-3">${name}</td>
+    <td class="col-md-9">
       <input class="bind-button edit-button btn btn-default" data-action="edit" type="button" value="修改" />
       <input class="bind-button del-button btn btn-danger" data-action="del" type="button" value="刪除" />
     </td>
   </tr>
 
   <tr class="attr-tr-edit tr-edit">
-    <td><input type="text" name="attr[${id}][name]" data-pre-value="${name}" data-show-id="attr-${id}-name" value="${name}" placeholder="名稱" /></td>
-    <td>
+    <td class="col-md-3"><input type="text" name="attr[${id}][name]" data-pre-value="${name}" data-show-id="attr-${id}-name" value="${name}" placeholder="名稱" /></td>
+    <td class="col-md-9">
 
       <div class="div-option"></div>
       <input class="bind-button btn btn-default" data-action="option_new" type="button" value="新增選項" />

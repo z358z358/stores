@@ -56,8 +56,9 @@ class MenuController extends Controller {
 	public function show(Store $store)
 	{
 		$items = $store->items()->orderBy('status', 'asc')->get();
+		$itemAttrs = $attrs = $this->getStoreItemAttrArray($store);
 
-		return view('home.menu.show', compact('store', 'items'));
+		return view('home.menu.show', compact('store', 'items', 'itemAttrs'));
 	}
 
 	/**
@@ -106,7 +107,7 @@ class MenuController extends Controller {
 	}
 
 	/**
-	 * 商品屬性編輯
+	 * 商品屬性編輯頁面
 	 * @param  Store  $store [description]
 	 * @return [type]        [description]
 	 */
@@ -114,18 +115,18 @@ class MenuController extends Controller {
 	{
 		DB::enableQueryLog();
 		$item_list = $store->items()->lists('name', 'id');
-		$attrs = [];
-		foreach($store->itemAttrs()->get() as $attr)
-		{
-			$content = $attr->content_array;
-			$content['id'] = $contentp['attr_id'] = $attr->id;
-
-			$attrs[] = $content;
-		}
+		$attrs = $this->getStoreItemAttrArray($store);
+		
 		//dd($attrs);
 		return view('home.menu.attrEdit', compact('store', 'item_list', 'attrs'));
 	}
 
+	/**
+	 * 更新商品屬性
+	 * @param  Store   $store   [description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function attrUpdate(Store $store, Request $request)
 	{
 		DB::enableQueryLog();
@@ -206,6 +207,19 @@ class MenuController extends Controller {
 	public function destroy($id)
 	{
 		//
+	}
+
+	public function getStoreItemAttrArray(Store $store)
+	{
+		$attrs = [];
+		foreach($store->itemAttrs()->get() as $attr)
+		{
+			$content = $attr->content_array;
+			$content['id'] = $contentp['attr_id'] = $attr->id;
+
+			$attrs[] = $content;
+		}
+		return $attrs;
 	}
 
 	/**

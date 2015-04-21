@@ -8651,6 +8651,10 @@ body {
   color:green;
 }
 
+.hide-my {
+	display: none;
+}
+
 .fb-comments, .fb-comments * {
     width:100% !important;
 }
@@ -8669,4 +8673,8 @@ body {
 
 #menu-item-table .menu-all-hidden, #chose-table .menu-chose-hidden{
 	display: none;
+}
+
+.item-one-more .remove-one, .item-three-more .remove-three{
+	display: inline-block;
 }
