@@ -36,6 +36,8 @@
       </thead>
     </table>
     <div class="chose-info"></div>
+    {!! Form::hidden('chose', '', ['id' => 'chose']) !!}
+    {!! Form::hidden('info', '', ['id' => 'info']) !!}
     {!! Form::submit('結帳', ['class' => 'btn btn-primary form-control']) !!}
     {!! Form::close() !!}
   </div>
@@ -62,7 +64,6 @@
       <input type="hidden" name="count[]" value="${count}" />
       <input type="hidden" name="price[]" value="${price}" />
       <input type="hidden" name="item_attrs[]" value="${item_attrs}" />
-
     </td>  
   </tr>
 </tbody>
@@ -72,8 +73,11 @@
 $(function() {
   var items = {!! json_encode($items) !!};
   var itemAttrs = {!! json_encode($itemAttrs) !!};
-  var chose = {};
   var item_ids = {};
+  var cookie_name = "{{ $store->order_cookie_name }}";
+  var demarcation = "{{ $demarcation }}";
+  $.cookie.json = true;
+  var chose = $.cookie(cookie_name) || {};
 
   // id對照陣列
   if(items.length){
@@ -176,7 +180,7 @@ $(function() {
               price += attr_price;    
               price_str = price_str + add_str + attr['option'][attr_key];
             }
-            attr_str = attr_str + "." + attr_id + "." + attr_key;
+            attr_str = attr_str + demarcation + attr_id + demarcation + attr_key;
             item_name = item_name + "," + attr_key;
 
           });
@@ -200,14 +204,16 @@ $(function() {
   function refreshChose(){
     var name, item_id, tmp_item,  tmp_items = [];
     var info = {"money": 0, "count": 0, "kind": 0};
+    var keys = Object.keys(chose);
 
     $(".chose-count").html("");
     $(".item-three-more").removeClass("item-three-more");
     $(".item-one-more").removeClass("item-one-more");
     $("#chose-table tbody").remove();
 
-    for(var key in chose){
-      //console.log(key);
+    keys.sort();
+    for (i = 0; i < keys.length; i++){
+      var key = keys[i];
       var _chose = chose[key];
       var tbody = $(".item-" + _chose["id"] + "-tbody");
       var tbody_class = "";
@@ -220,20 +226,24 @@ $(function() {
 
       // 顯示已買數量
       if(key == tbody.data("item-attrs")){
-        $(".item-" + _chose["id"] + "-count").html(tmp_item["count"]);
-        if(tmp_item["count"] > 2){
+        $(".item-" + _chose["id"] + "-count").html(_chose["count"]);
+        if(_chose["count"] > 2){
           tbody.addClass("item-three-more");
-          tbody_class = tbody_class + " item-three-more";
         }
         tbody.addClass("item-one-more");
-        tbody_class = tbody_class + " item-one-more";
       }
+
+      if(_chose["count"] > 2){
+        tbody_class = tbody_class + " item-three-more";
+      }
+      tbody_class = tbody_class + " item-one-more";
+
       tmp_item["tbody_class"] = tbody_class;
      
       tmp_items.push(tmp_item);
 
-      info.money += tmp_item["price"]*tmp_item["count"];
-      info.count += tmp_item["count"];
+      info.money += _chose["price"]*_chose["count"];
+      info.count += _chose["count"];
       info.kind++;
 
       
@@ -241,6 +251,9 @@ $(function() {
 
     $.tmpl( $("#menu-item-tbody").html(), tmp_items ).appendTo( "#chose-table" );
     $(".chose-info").html("總價錢:" + info.money + ",總數量:" + info.count + ",種類:" + info.kind);
+    $.cookie(cookie_name, chose, { path: '/' });
+    $("input#info").val(JSON.stringify(info));
+    $("input#chose").val(JSON.stringify(chose));
 
     //console.log("refresh:" , tmp_items);
   }

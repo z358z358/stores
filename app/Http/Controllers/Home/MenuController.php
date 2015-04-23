@@ -11,9 +11,12 @@ use DB;
 
 class MenuController extends Controller {
 
+	// 分隔用的keyword
+	public $demarcation = '|';
+
 	public function __construct()
 	{
-		$this->middleware('auth', ['except' => ['index', 'show']]);
+		$this->middleware('auth', ['except' => ['index', 'show', 'submit']]);
 	}
 
 	/**
@@ -56,9 +59,10 @@ class MenuController extends Controller {
 	public function show(Store $store)
 	{
 		$items = $store->items()->orderBy('status', 'asc')->get();
-		$itemAttrs = $attrs = $this->getStoreItemAttrArray($store);
+		$itemAttrs = $this->getStoreItemAttrArray($store);
+		$demarcation = $this->demarcation;
 
-		return view('home.menu.show', compact('store', 'items', 'itemAttrs'));
+		return view('home.menu.show', compact('store', 'items', 'itemAttrs', 'demarcation'));
 	}
 
 	/**
@@ -191,11 +195,39 @@ class MenuController extends Controller {
 	 */
 	public function submit(Store $store, Request $request)
 	{
+		$info = json_decode($request->input('info'), true);
+		$chose = json_decode($request->input('chose'), true);
+		$clear = $this->choseToClear($store, $chose);
+		
+		if(is_null($clear[0]) && $clear['result'] == false)
+		{
+			flash()->error($clear['msg']);
+			return redirect( route('menu.show', $store->slug) );
+		}
+
+		// 檢查訂單
+		$check = $this->checkOrderSubmit(['info' => $info, 'clear' => $clear]);
+		if($check['result'] == false)
+		{
+			flash()->error($check['msg']);
+			return redirect( route('menu.show', $store->slug) );
+		}
+
+		$request->merge(['info' => $info, 'chose' => $chose, 'clear' => $clear]);
 		$order = New \App\Order;
-		$order->content = json_encode( array_except($request->all(), ['_token']) );
 		$order->store_id = $store->id;
-		$order->user_id = Auth::user()->id;
+		$order->content = json_encode( array_except($request->all(), ['_token']) );
+		if(Auth::check()){
+			$order->user_id = Auth::user()->id;
+		}
+	
 		$order->save();
+		flash()->success('點菜成功');
+
+		$parameters = ['id' => $order->id, 'created_at' => $order->created_at->toDateTimeString()];
+		//dd($order->created_at);
+
+		return redirect( route('order.index', $parameters) )->with('order_cookie_name', $store->order_cookie_name);
 	}
 
 	/**
@@ -209,7 +241,13 @@ class MenuController extends Controller {
 		//
 	}
 
-	public function getStoreItemAttrArray(Store $store)
+	/**
+	 * 把itemAttr裡的content搬出來
+	 * @param  Store  $store [description]
+	 * @param  string $type  [description]
+	 * @return [type]        [description]
+	 */
+	public function getStoreItemAttrArray(Store $store, $type = 'array')
 	{
 		$attrs = [];
 		foreach($store->itemAttrs()->get() as $attr)
@@ -217,7 +255,14 @@ class MenuController extends Controller {
 			$content = $attr->content_array;
 			$content['id'] = $contentp['attr_id'] = $attr->id;
 
-			$attrs[] = $content;
+			if($type == 'keyValue')
+			{
+				$attrs[$attr->id] = $content;
+			}
+			else
+			{
+				$attrs[] = $content;
+			}
 		}
 		return $attrs;
 	}
@@ -246,6 +291,83 @@ class MenuController extends Controller {
 			'option' => $option,
 		];
 		return json_encode($content);
+	}
+
+	/**
+	 * 把chose陣列整理成clear
+	 * @param  Store  $store [description]
+	 * @param  Array  $chose [description]
+	 * @return [type]        [description]
+	 */
+	public function choseToClear(Store $store, Array $chose)
+	{
+		$clear = [];
+		$items = $store->items()->get();
+		$itemAttrs = $this->getStoreItemAttrArray($store, 'keyValue');
+
+		foreach($chose as $key => $data)
+		{
+			if( !is_array($data) || is_null($data['count']) || ($data['count'] = intval($data['count'])) <= 0 )
+			{
+				continue;
+			}
+
+			$tmp = explode($this->demarcation, $key);
+			$count = count($tmp);
+			$one = [];
+
+			$item = $items->find($data['id']);
+			if(!$item)
+			{
+				$clear = ['result' => false, 'msg' => '查無此商品:' . $data['name']];
+				break;
+			}
+
+			$one['id'] = $data['id'];
+			// 有屬性
+			if($count > 1 && ($count % 2) == 1)
+			{
+				for($i = 1; $i < $count; $i+=2)
+				{
+					$attr_id = $tmp[$i];
+					$attr = $itemAttrs[$attr_id];
+					if( !$attr || !in_array($one['id'], $attr['item_id']) || is_null($attr['option'][$tmp[$i+1]]) )
+					{
+						$clear = ['result' => false, 'msg' => '查無此商品:' . $data['name']];
+						break;
+					}
+
+					$item->price += $attr['option'][$tmp[$i+1]];
+					$one['attr'][] = [$tmp[$i] => $tmp[$i+1]];
+				}
+			}
+
+			if($item->price != $data['price'])
+			{
+				$clear = ['result' => false, 'msg' => '商品價錢不符合:' . $data['name'] . ' 正確單價:' . $item->price];
+				break;
+			}
+
+			$one['price'] = $data['price'];
+			$one['count'] = $data['count'];
+			$one['name'] = $data['name'];
+
+			$clear[] = $one;
+
+		}
+		//dd($clear, $chose, $items, $itemAttrs);
+		return $clear;
+	}
+
+
+	public function checkOrderSubmit(Array $array)
+	{
+		$info = [];
+		foreach ($array['clear'] as $key => $data) 
+		{
+			
+		}
+		dd($array);
 	}
 
 }

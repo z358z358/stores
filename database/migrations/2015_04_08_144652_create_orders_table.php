@@ -16,7 +16,7 @@ class CreateOrdersTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('store_id')->unsigned()->index();
-			$table->integer('user_id')->unsigned()->index();
+			$table->integer('user_id')->unsigned()->index()->nullable();
 			$table->integer('status');
 			$table->text('content');
 			$table->timestamps();

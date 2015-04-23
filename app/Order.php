@@ -12,4 +12,14 @@ class Order extends Model {
 		return $query->where('status', '!=', '100');
 	}
 
+	public function scopeIdAndCreated($query, Array $array)
+	{
+		return $query->where('id', $array['id'])->where('created_at', $array['created_at']);
+	}
+
+	public function getContentArrayAttribute()
+	{
+		return json_decode($this->content, true);
+	}
+
 }

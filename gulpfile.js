@@ -59,6 +59,7 @@ elixir(function(mix) {
     .scripts([
         'libs/jquery-ui.js',
         'libs/jquery.tmpl.js',
+        'libs/jquery.cookie.js',
         'jquery-ui_my.js',
     ], 'public/js/jquery-ui.js', 'resources/assets/js')
 

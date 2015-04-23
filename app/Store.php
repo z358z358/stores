@@ -72,6 +72,11 @@ class Store extends Model {
 		return (Auth::user() && $this->attributes['user_id'] == Auth::user()->id);
 	}
 
+	public function getOrderCookieNameAttribute()
+	{
+		return 'order' . $this->id;
+	}
+
 	/**
 	 * 對應到該使用者
 	 * @return [type] [description]

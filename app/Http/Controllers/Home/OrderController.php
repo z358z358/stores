@@ -5,12 +5,14 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Auth;
+use App\Order;
+use Cookie;
 
 class OrderController extends Controller {
 
 	public function __construct()
 	{
-		$this->middleware('auth');
+		$this->middleware('auth', ['except' => ['index']]);
 	}
 
 	/**
@@ -18,11 +20,25 @@ class OrderController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		$user = Auth::user();
-		$orders = $user->orders()->unfinished()->get();
-		return view('home.order.index', compact('user', 'orders'));
+		$user = New Auth;
+		$orders = [];
+		if(Auth::check())
+		{
+			$user = Auth::user();
+			$orders = $user->orders()->unfinished()->get();
+		}
+		else if($request->input('id') && $request->input('created_at'))
+		{
+			$where = array_only($request->all(), ['id', 'created_at']);
+			$orders = Order::idAndCreated($where)->get();
+			//dd($orders);
+		}
+
+		$order_cookie_name = session('order_cookie_name');
+		
+		return view('home.order.index', compact('user', 'orders', 'order_cookie_name'));
 	}
 
 	/**
