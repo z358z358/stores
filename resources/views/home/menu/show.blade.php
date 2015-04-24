@@ -74,6 +74,7 @@ $(function() {
   var items = {!! json_encode($items) !!};
   var itemAttrs = {!! json_encode($itemAttrs) !!};
   var item_ids = {};
+  var attr_ids = {};
   var cookie_name = "{{ $store->order_cookie_name }}";
   var demarcation = "{{ $demarcation }}";
   $.cookie.json = true;
@@ -87,6 +88,11 @@ $(function() {
       items[key]["price"] = parseFloat(items[key]["price"]);
     }
   }
+  if(itemAttrs.length){
+    for(var key in itemAttrs) {
+      attr_ids[itemAttrs[key]["id"]] = key;
+    }
+  }  
 
   if($("#menu-item-tbody").length){
     $.tmpl( $("#menu-item-tbody").html(), items ).appendTo( "#menu-item-table" );
@@ -113,7 +119,7 @@ $(function() {
     });
   }
   refreshChose();
-  //console.log("init:",item_ids, items, itemAttrs);
+  console.log("init:",item_ids, attr_ids, items, itemAttrs);
 
   // 綁定按鈕
   $(".menu-item-table").on("click", ".bind-button", function(){
@@ -132,6 +138,7 @@ $(function() {
         chose[name]["count"] += value;
         chose[name]["price"] = parseFloat( tbody.find(".item-price-total").html() );
         chose[name]["name"] = tbody.data("item-full-name");
+        chose[name]["simple_name"] = items[item_ids[item_id]]["name"];
 
         if(isNaN(chose[name]["count"]) || chose[name]["count"] <= 0){
           delete chose[name];
@@ -217,6 +224,60 @@ $(function() {
       var _chose = chose[key];
       var tbody = $(".item-" + _chose["id"] + "-tbody");
       var tbody_class = "";
+      var _delete = false;
+
+      // 檢查chose是否正確
+      // id存在?
+      if(tbody.length == 0){
+        _delete = true;
+      }
+
+      // item內容
+      var item = jQuery.extend( {} , items[item_ids[_chose["id"]]] );
+      var attr = key.split(demarcation);
+      var count = attr.length;
+      if(item["name"] != _chose["simple_name"]){
+        _delete = true;
+      }
+
+      if(count > 1 && (count % 2) == 1 ){
+        var max = {};
+        for(var i = 1; i < count; i+=2){
+          var tmp_attr = itemAttrs[attr_ids[attr[i]]];
+    
+          // 屬性不存在或不屬於該item
+          if(!tmp_attr || tmp_attr["option"][attr[i+1]] === undefined || tmp_attr["item_id"].indexOf( (""+_chose["id"]) ) == -1){  
+            _delete = true;
+            break;
+          }
+          max[attr[i]] = (max[attr[i]])? max[attr[i]] : 0;
+          max[attr[i]]++;
+
+          item["price"] += parseFloat(tmp_attr["option"][attr[i+1]]);
+          //console.log('tmp',tmp_attr,attr[i] , max);
+        }
+
+        // 檢查max
+        for(var attr_id in max){
+          //console.log(_chose , max);
+          if(itemAttrs[attr_ids[attr_id]]['max'] && itemAttrs[attr_ids[attr_id]]['max'] < max[attr_id]){
+            _delete = true;
+            break;
+          }
+        }
+      }
+
+      if(item["price"] != _chose["price"]){
+        console.log("111" , item , _chose);
+        _delete = true;
+      }
+     // console.log("item" , item , _chose);
+      
+      if(_delete){
+        console.log("delete" , chose[key] , item);
+        delete chose[key];
+        continue;
+      }
 
       tmp_item = jQuery.extend({}, items[ item_ids[_chose["id"]] ]);
       tmp_item["item_attrs"] = key;
@@ -255,7 +316,7 @@ $(function() {
     $("input#info").val(JSON.stringify(info));
     $("input#chose").val(JSON.stringify(chose));
 
-    //console.log("refresh:" , tmp_items);
+    console.log("refresh:" , chose);
   }
 
   function sortByKey(myObj){

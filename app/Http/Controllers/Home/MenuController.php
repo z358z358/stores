@@ -199,7 +199,7 @@ class MenuController extends Controller {
 		$chose = json_decode($request->input('chose'), true);
 		$clear = $this->choseToClear($store, $chose);
 		
-		if(is_null($clear[0]) && $clear['result'] == false)
+		if(isset($clear['result']) && $clear['result'] == false)
 		{
 			flash()->error($clear['msg']);
 			return redirect( route('menu.show', $store->slug) );
@@ -253,7 +253,7 @@ class MenuController extends Controller {
 		foreach($store->itemAttrs()->get() as $attr)
 		{
 			$content = $attr->content_array;
-			$content['id'] = $contentp['attr_id'] = $attr->id;
+			$content['id'] = $content['attr_id'] = $attr->id;
 
 			if($type == 'keyValue')
 			{
@@ -330,21 +330,34 @@ class MenuController extends Controller {
 				for($i = 1; $i < $count; $i+=2)
 				{
 					$attr_id = $tmp[$i];
-					$attr = $itemAttrs[$attr_id];
+					$attr = isset($itemAttrs[$attr_id]) ? $itemAttrs[$attr_id] : [];
 					if( !$attr || !in_array($one['id'], $attr['item_id']) || is_null($attr['option'][$tmp[$i+1]]) )
 					{
 						$clear = ['result' => false, 'msg' => '查無此商品:' . $data['name']];
-						break;
+						break 2;
 					}
-
+					
 					$item->price += $attr['option'][$tmp[$i+1]];
 					$one['attr'][] = [$tmp[$i] => $tmp[$i+1]];
+					$one['attr_count'][$tmp[$i]] = (isset($one['attr_count'][$tmp[$i]])) ? $one['attr_count'][$tmp[$i]] : 0;
+					$one['attr_count'][$tmp[$i]]++;
+				}
+				
+				// 檢察屬性的max
+				foreach($one['attr_count'] as $attr_id => $attr_count)
+				{
+					if($itemAttrs[$attr_id]['max'] && $attr_count > $itemAttrs[$attr_id]['max'])
+					{
+						$clear = ['result' => false, 'msg' => implode(' ' ,array_keys($itemAttrs[$attr_id]['option'])) . '最多只能選' . $itemAttrs[$attr_id]['max']];
+						break 2;
+					}
 				}
 			}
 
 			if($item->price != $data['price'])
 			{
-				$clear = ['result' => false, 'msg' => '商品價錢不符合:' . $data['name'] . ' 正確單價:' . $item->price];
+
+				$clear = ['result' => false, 'msg' => '商品價錢不符合:' . $data['name'] . ' 正確單價:' . $item->price];				
 				break;
 			}
 
@@ -355,19 +368,49 @@ class MenuController extends Controller {
 			$clear[] = $one;
 
 		}
+
+		// 資料正確  開始排序
+		if(!isset($clear['result']))
+		{
+			$clear = array_sort($clear, function($value)
+			{
+				$length = isset($value['attr']) ? count($value['attr']) : 0;
+			    return ($value['id']) + $length;
+			});
+
+		}
 		//dd($clear, $chose, $items, $itemAttrs);
 		return $clear;
 	}
 
-
+	/**
+	 * 檢查總價錢跟前台顯示的一不一樣
+	 * @param  Array  $array [description]
+	 * @return [type]        [description]
+	 */
 	public function checkOrderSubmit(Array $array)
 	{
-		$info = [];
+		$result = ['result' => true, 'msg' => ''];
+		$info = ['count' => 0, 'price' => 0, 'kind' => count($array['clear'])];
 		foreach ($array['clear'] as $key => $data) 
 		{
-			
+			$info['count'] += $data['count'];
+			$info['price'] += $data['price'] * $data['count'];			
 		}
-		dd($array);
+
+		$diff = array_diff($info, $array['info']);
+		if($diff !== [])
+		{
+			$result['result'] = false;
+			$key_msg = ['count' => '總數量', 'price' => '總價錢', 'kind' => '種類'];
+			foreach($diff as $key => $value)
+			{
+				$result['msg'] .= $key_msg[$key] . '應為' . $value . ' ';
+			}
+		}
+		//dd($array, $info );
+
+		return $result;
 	}
 
 }

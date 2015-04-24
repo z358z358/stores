@@ -85,6 +85,7 @@ $(function() {
   var max = 0;
 
   items.forEach(function(item){
+     item["item_id"] = item.id;
      var item_id = parseInt(item.item_id);
      max = (item_id > max)?item_id:max;
    }.bind(max));
