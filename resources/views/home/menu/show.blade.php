@@ -178,12 +178,12 @@ $(function() {
             var attr_key = $(this).data("attr-key");
             var attr = itemAttrs[attr_index];
             var attr_price = attr['option'][attr_key];
+            attr_price = parseFloat(attr_price);
 
             // 單價變動
             if(attr_price){
               var add_str = (attr_price > 0 )? "+" : "";
-
-              attr_price = parseFloat(attr_price);
+              
               price += attr_price;    
               price_str = price_str + add_str + attr['option'][attr_key];
             }
@@ -219,8 +219,8 @@ $(function() {
     $("#chose-table tbody").remove();
 
     keys.sort();
-    for (i = 0; i < keys.length; i++){
-      var key = keys[i];
+    for (var key_i = 0; key_i < keys.length; key_i++){
+      var key = keys[key_i];
       var _chose = chose[key];
       var tbody = $(".item-" + _chose["id"] + "-tbody");
       var tbody_class = "";
@@ -300,7 +300,7 @@ $(function() {
       tbody_class = tbody_class + " item-one-more";
 
       tmp_item["tbody_class"] = tbody_class;
-     
+     console.log("tmp_item", tmp_item);
       tmp_items.push(tmp_item);
 
       info.money += _chose["price"]*_chose["count"];
