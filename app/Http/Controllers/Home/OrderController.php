@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Order;
 use Cookie;
+use DB;
 
 class OrderController extends Controller {
 
@@ -22,12 +23,13 @@ class OrderController extends Controller {
 	 */
 	public function index(Request $request)
 	{
+		DB::enableQueryLog();
 		$user = New Auth;
 		$orders = [];
 		if(Auth::check())
 		{
 			$user = Auth::user();
-			$orders = $user->orders()->unfinished()->get();
+			$orders = $user->orders()->unfinished()->with('store')->get();
 		}
 		else if($request->input('id') && $request->input('created_at'))
 		{

@@ -22,4 +22,9 @@ class Order extends Model {
 		return json_decode($this->content, true);
 	}
 
+	public function store()
+	{
+		return $this->belongsTo('App\Store');
+	}
+
 }

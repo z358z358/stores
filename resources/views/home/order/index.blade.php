@@ -6,9 +6,27 @@
 
 @section('content')
 @if ($orders)
-	@foreach ($orders as $order)
-		{{ var_dump($order->content_array) }}
+<div class="table-responsive">
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>訂單編號</th>
+            <th>商店</th>
+            <th>建立時間</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach ($orders as $order)
+		<tr>
+            <td>{{ $order->id }}</td>
+            <td>{{ $order->store->name }}</td>
+            <td>{{ $order->created_at }}</td>
+        </tr>
 	@endforeach
+    </tbody>
+</table>
+</div>
+	
 @endif
 
 @endsection
