@@ -119,6 +119,6 @@ class Store extends Model {
 	 */
 	public function itemAttrs()
 	{
-		return $this->hasMany('App\itemAttr');
+		return $this->hasMany('App\ItemAttr');
 	}
 }
