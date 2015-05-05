@@ -10,6 +10,12 @@ body {
   color:green;
 }
 
+.share-box .fb {
+  display: inline-block;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
 .hide-my {
 	display: none;
 }

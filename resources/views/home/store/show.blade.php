@@ -17,10 +17,12 @@
             <div class="col-lg-12">
                 <h1 class="page-header">
                     {{ $store->name }}
-                    <span class="fb"><div class="fb-like" data-href="{{ route('store.showById', $store->id) }}" data-layout="button_count" data-action="like" data-show-faces="true"></div></span>
-                    <span class="g-plus"><div class="g-plusone" data-size="medium"></div></span>
-                    <span class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-url="{{ route('store.showById', $store->id) }}"></a></span>
-                </h1>
+                    <span class="share-box">
+                        <span class="fb"><div class="fb-like" data-href="{{ route('store.showById', $store->id) }}" data-layout="button_count" data-action="like" data-show-faces="true"></div></span>                    
+                        <span class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-url="{{ route('store.showById', $store->id) }}"></a></span>
+                        <span class="g-plus"><div class="g-plusone" data-size="medium"></div></span>
+                    </span>
+                </h1>                    
             </div>
         </div>
         <!-- /row -->
@@ -76,8 +78,8 @@
                     <div class="panel-body">
                         <div class="text-center">
                             <a href="{{ $share['facebook'] }}" class="btn btn-social-icon btn-facebook"><i class="fa fa-facebook"></i></a>
-                            <a href="{{ $share['gplus'] }}" class="btn btn-social-icon btn-google-plus"><i class="fa fa-google-plus"></i></a>
                             <a href="{{ $share['twitter'] }}" class="btn btn-social-icon btn-twitter"><i class="fa fa-twitter"></i></a>
+                            <a href="{{ $share['gplus'] }}" class="btn btn-social-icon btn-google-plus"><i class="fa fa-google-plus"></i></a>
                         </div>
                     </div>
                 </div>
@@ -117,10 +119,16 @@
 @section('footer')
     @include('partials.sb-admin-2')
 
+    <!-- Google+ JavaScript API -->
     <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'zh-TW'}</script>
+    <!-- End Google+ JavaScript API -->
+    
+    <!-- twitter -->
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
     </script>
+    <!-- End twitter -->
 
+    <!-- Disqus -->
     <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = 'onininon';
@@ -133,4 +141,5 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
     </script>
+    <!-- End Disqus -->
 @endsection
