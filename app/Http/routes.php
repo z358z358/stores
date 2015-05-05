@@ -15,6 +15,10 @@ Route::controllers([
 	'password' => 'Auth\PasswordController',
 ]);
 
+Route::get('test', function(){
+    var_dump($_SERVER);
+});
+
 /**
  * home
  */
