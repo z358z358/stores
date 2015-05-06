@@ -20,6 +20,14 @@ Route::get('test', function(){
 });
 
 /**
+ * admin
+ */
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
+{
+	Route::get('corn/{type}', 'CornController@index');
+});
+
+/**
  * home
  */
 Route::group(['namespace' => 'Home'], function()

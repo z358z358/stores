@@ -1,10 +1,18 @@
 @extends('app')
 
 @section('title')
-修改商店資料
+建立訂單
 @stop
 
 @section('content')
+<div class="row">
+    <div class="col-lg-10">
+        <h1 class="page-header">
+            <a href="{{ route('store.slug', $store->slug) }}">{{ $store->name }}</a>           
+        </h1>                    
+    </div>
+</div>
+
 <ul id="myTab" class="nav nav-tabs" role="tablist">
   <li role="presentation" class="active"><a href="#menu" id="menu-tab" role="tab" data-toggle="tab" aria-controls="menu" aria-expanded="true">Menu</a></li>
   <li role="presentation" class=""><a href="#chose" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="false">已選</a></li>
@@ -210,7 +218,7 @@ $(function() {
 
   function refreshChose(){
     var name, item_id, tmp_item,  tmp_items = [];
-    var info = {"money": 0, "count": 0, "kind": 0};
+    var info = {"price": 0, "count": 0, "kind": 0};
     var keys = Object.keys(chose);
 
     $(".chose-count").html("");
@@ -303,7 +311,7 @@ $(function() {
      console.log("tmp_item", tmp_item);
       tmp_items.push(tmp_item);
 
-      info.money += _chose["price"]*_chose["count"];
+      info.price += _chose["price"]*_chose["count"];
       info.count += _chose["count"];
       info.kind++;
 
@@ -311,7 +319,7 @@ $(function() {
     }
 
     $.tmpl( $("#menu-item-tbody").html(), tmp_items ).appendTo( "#chose-table" );
-    $(".chose-info").html("總價錢:" + info.money + ",總數量:" + info.count + ",種類:" + info.kind);
+    $(".chose-info").html("總價錢:" + info.price + ",總數量:" + info.count + ",種類:" + info.kind);
     $.cookie(cookie_name, chose, { path: '/' });
     $("input#info").val(JSON.stringify(info));
     $("input#chose").val(JSON.stringify(chose));

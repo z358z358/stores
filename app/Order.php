@@ -1,12 +1,18 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon ;
 
 class Order extends Model {
 
-	//
-	
+	// 幾天前的
+	public function scopeDayAgo($query, $day)
+	{
+		$day = intval($day);
+		return $query->where('updated_at', '<=', Carbon::now()->subDays($day));
+	}
 
+	// 未完成
 	public function scopeUnfinished($query)
 	{
 		return $query->where('status', '!=', '100');

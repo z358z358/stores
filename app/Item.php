@@ -6,6 +6,11 @@ class Item extends Model {
 
 	protected $fillable = ['name', 'price', 'status'];
 
+	public function scopeStatusOn($query)
+	{
+		$query->where('status', '>=', '1')->orderBy('status', 'asc');
+	}
+
 	/**
 	 * 對應的Store
 	 * @return [type] [description]

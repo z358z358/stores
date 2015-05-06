@@ -58,7 +58,8 @@ class MenuController extends Controller {
 	 */
 	public function show(Store $store)
 	{
-		$items = $store->items()->orderBy('status', 'asc')->get();
+		DB::enableQueryLog();
+		$items = $store->items()->statusOn()->get();
 		$itemAttrs = $this->getStoreItemAttrArray($store);
 		$demarcation = $this->demarcation;
 
@@ -216,6 +217,7 @@ class MenuController extends Controller {
 		$request->merge(['info' => $info, 'chose' => $chose, 'clear' => $clear]);
 		$order = New \App\Order;
 		$order->store_id = $store->id;
+		$order->price = $info['price'];
 		$order->content = json_encode( array_except($request->all(), ['_token']) );
 		if(Auth::check()){
 			$order->user_id = Auth::user()->id;
@@ -280,7 +282,7 @@ class MenuController extends Controller {
 		if(is_array($data['option']))
 		{
 			foreach ($data['option']['name'] as $key => $name) {
-				$option[$name] = $data['option']['price'][$key];
+				$option[$name] = floatval($data['option']['price'][$key]);
 			}
 		}
 
@@ -301,6 +303,7 @@ class MenuController extends Controller {
 	 */
 	public function choseToClear(Store $store, Array $chose)
 	{
+		$tmp123 = [];
 		$clear = [];
 		$items = $store->items()->get();
 		$itemAttrs = $this->getStoreItemAttrArray($store, 'keyValue');
@@ -317,7 +320,8 @@ class MenuController extends Controller {
 			$one = [];
 
 			$item = $items->find($data['id']);
-			if(!$item)
+			$item_price = $item->price; // 要另外存 不然會改到原價
+			if(!$item || $item->status <= 0)
 			{
 				$clear = ['result' => false, 'msg' => '查無此商品:' . $data['name']];
 				break;
@@ -337,7 +341,9 @@ class MenuController extends Controller {
 						break 2;
 					}
 					
-					$item->price += $attr['option'][$tmp[$i+1]];
+					$item_price += $attr['option'][$tmp[$i+1]];
+					$tmp123[] = $item->toArray();
+					$tmp123[] = $attr['option'][$tmp[$i+1]];
 					$one['attr'][] = [$tmp[$i] => $tmp[$i+1]];
 					$one['attr_count'][$tmp[$i]] = (isset($one['attr_count'][$tmp[$i]])) ? $one['attr_count'][$tmp[$i]] : 0;
 					$one['attr_count'][$tmp[$i]]++;
@@ -354,10 +360,11 @@ class MenuController extends Controller {
 				}
 			}
 
-			if($item->price != $data['price'])
+			if($item_price != $data['price'])
 			{
 
 				$clear = ['result' => false, 'msg' => '商品價錢不符合:' . $data['name'] . ' 正確單價:' . $item->price];				
+				//dd($tmp123 , $chose , $item->toArray());
 				break;
 			}
 
