@@ -35,6 +35,7 @@
 	<script type="text/javascript">
 		$(function() {
 			$('#flash-overlay-modal').modal();
+			$(".timeago").timeago();
 		});
 	</script>
 

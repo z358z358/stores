@@ -29,12 +29,12 @@ class OrderController extends Controller {
 		if(Auth::check())
 		{
 			$user = Auth::user();
-			$orders = $user->orders()->unfinished()->with('store')->get();
+			$orders = $user->orders()->unfinished()->orderByTime()->with('store')->get();
 		}
 		else if($request->input('id') && $request->input('created_at'))
 		{
 			$where = array_only($request->all(), ['id', 'created_at']);
-			$orders = Order::idAndCreated($where)->get();
+			$orders = Order::idAndCreated($where)->with('store')->get();
 			//dd($orders);
 		}
 

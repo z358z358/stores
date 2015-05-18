@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Store;
 use App\Item;
+use App\Order;
 use Auth;
 use DB;
 
@@ -56,14 +57,27 @@ class MenuController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show(Store $store)
+	public function show(Store $store, Request $request)
 	{
 		DB::enableQueryLog();
 		$items = $store->items()->statusOn()->get();
 		$itemAttrs = $this->getStoreItemAttrArray($store);
 		$demarcation = $this->demarcation;
+		$chose = [];
+		$order_id = 0;
 
-		return view('home.menu.show', compact('store', 'items', 'itemAttrs', 'demarcation'));
+		if($request->input('id') && $request->input('created_at'))
+		{
+			$where = array_only($request->all(), ['id', 'created_at']);
+			$order = $store->orders()->idAndCreated($where)->first();
+			if($order)
+			{
+				$chose = $order->content_array['chose'];
+				$order_id = $order->id;
+			}
+		}
+
+		return view('home.menu.show', compact('store', 'items', 'itemAttrs', 'demarcation', 'chose', 'order_id'));
 	}
 
 	/**
@@ -215,13 +229,28 @@ class MenuController extends Controller {
 		}
 
 		$request->merge(['info' => $info, 'chose' => $chose, 'clear' => $clear]);
-		$order = New \App\Order;
+		$order_id = intval($request->input('order_id'));
+		$order = Order::findOrNew($order_id);
+
+		if(Auth::check())
+		{
+			// 確定修改訂單
+			if($order->store_id == $store->id && $order->user_id == Auth::user()->id)
+			{
+				
+			}
+			else
+			{
+				$order = New Order;
+			}
+			$order->user_id = Auth::user()->id;
+		}
+
 		$order->store_id = $store->id;
 		$order->price = $info['price'];
 		$order->content = json_encode( array_except($request->all(), ['_token']) );
-		if(Auth::check()){
-			$order->user_id = Auth::user()->id;
-		}
+		$order->status = $order->step_status['create']['key'];
+		
 	
 		$order->save();
 		flash()->success('點菜成功');

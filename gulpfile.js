@@ -41,6 +41,7 @@ elixir(function(mix) {
     .scripts([
     	'libs/jquery.js',
     	'libs/bootstrap.js',
+        'libs/jquery.timeago.js',
     ], 'public/js/all.js', 'resources/assets/js')
 
     .scripts([

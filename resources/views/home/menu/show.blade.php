@@ -46,6 +46,7 @@
     <div class="chose-info"></div>
     {!! Form::hidden('chose', '', ['id' => 'chose']) !!}
     {!! Form::hidden('info', '', ['id' => 'info']) !!}
+    {!! Form::hidden('order_id', $order_id) !!}
     {!! Form::submit('結帳', ['class' => 'btn btn-primary form-control']) !!}
     {!! Form::close() !!}
   </div>
@@ -87,6 +88,10 @@ $(function() {
   var demarcation = "{{ $demarcation }}";
   $.cookie.json = true;
   var chose = $.cookie(cookie_name) || {};
+  var orderChose = {!! json_encode($chose) !!};
+  if(orderChose){
+    chose = orderChose;
+  }
 
   // id對照陣列
   if(items.length){
