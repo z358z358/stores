@@ -40,7 +40,7 @@ Route::group(['namespace' => 'Home'], function()
 	Route::get('settings/email/emailProveSend', ['as' => 'emailProveSend', 'uses' => 'SettingsController@emailProveSend']);
 	Route::get('settings/email/emailProve/{email_token}', ['as' => 'emailProveCheck', 'uses' => 'SettingsController@emailProveCheck']);
 
-	Route::resource('order', 'OrderController');
+	Route::resource('order', 'OrderController', ['only' => ['index', 'destroy', 'update']]);
 
 	Route::resource('store', 'StoreController');
 	Route::get('store_id/{store}', ['as' => 'store.showById', 'uses' =>'StoreController@showById']);
@@ -54,6 +54,7 @@ Route::group(['namespace' => 'Home'], function()
 
 	Route::get('{storeSlug}/menu', ['as' => 'menu.show', 'uses' => 'MenuController@show']);
 	Route::post('{storeSlug}/menu/submit', ['as' => 'menu.submit', 'uses' => 'MenuController@submit']);		
+	Route::get('{storeSlug}/order', ['as' => 'store.order', 'uses' =>'OrderController@storeOrder']);
 	Route::get('{storeSlug}/{name?}', ['as' => 'store.slug', 'uses' =>'StoreController@show']);
 
 });

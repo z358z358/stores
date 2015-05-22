@@ -66,15 +66,37 @@ class Store extends Model {
 		return !is_null($this->items->first());
 	}
 
-
+	/**
+	 * 檢查是不是建立者
+	 * @return [type] [description]
+	 */
 	public function getOwnerAttribute()
 	{
 		return (Auth::user() && $this->attributes['user_id'] == Auth::user()->id);
 	}
 
+	/**
+	 * 回傳cookie name
+	 * @return [type] [description]
+	 */
 	public function getOrderCookieNameAttribute()
 	{
 		return 'order' . $this->id;
+	}
+
+	/**
+	 * 檢查商店權限
+	 * @return [type] [description]
+	 */
+	public function checkAuth()
+	{
+		$result = false;
+		// 商店建立者
+		if( $this->owner )
+		{
+			$result = true;
+		}	
+		return $result;
 	}
 
 	/**

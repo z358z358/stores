@@ -1,15 +1,30 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon ;
+use Carbon\Carbon;
+use Hash;
 
 class Order extends Model {
 
 	public $step_status = [
-		'create' => ['key' => 50, 'name' => '剛建立訂單'],
-		'accept' => ['key' => 75, 'name' => '店家已接受'],
+		'del'	 => ['key' => 0,  'name' => '待刪除'],
+		'create' => ['key' => 50, 'name' => '剛建立訂單，等待訂單接受'],
+		'accept' => ['key' => 75, 'name' => '店家已接受，等待確認付款'],
 		'done'   => ['key' => 100,'name' => '訂單完成'],
 	];
+
+	public $step_status_num = []; // __construct
+
+	public function __construct($attributes = array())  {
+        parent::__construct($attributes); // Eloquent
+        // 把數字key存在另一個變數
+        foreach($this->step_status as $key => $data)
+        {
+        	$tmp = $data['key'];
+        	$data['key'] = $key;
+			$this->step_status_num[$tmp] = $data;
+        }        
+    }
 
 	// 幾天前的
 	public function scopeDayAgo($query, $day)
@@ -21,7 +36,7 @@ class Order extends Model {
 	// 未完成
 	public function scopeUnfinished($query)
 	{
-		return $query->where('status', '!=', '100');
+		return $query->where('status', '!=', '100')->where('status', '!=', '0');
 	}
 
 	// 從id和建立時間去找訂單
@@ -40,6 +55,17 @@ class Order extends Model {
 	public function getContentArrayAttribute()
 	{
 		return json_decode($this->content, true);
+	}
+
+	// order的token
+	public function getTokenAttribute()
+	{
+		return bcrypt($this->created_at);
+	}
+
+	public function checkToken($token)
+	{
+		return Hash::check($this->created_at, $token);
 	}
 
 	public function store()

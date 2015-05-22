@@ -14,7 +14,6 @@
                 <th>商店</th>
                 <th>總價錢</th>
                 <th>時間</th>
-                <th>狀態</th>
                 <th></th>
             </tr>
         </thead>    
@@ -35,29 +34,40 @@
 
 @section('footer')
 <script id="order-tbody" type="text/x-handlebars-template">
-<tbody id="order-${id}-tbody" class="" data-order-id="${id}" data-order-key="${key}">
+<tbody id="order-${id}-tbody" class="order-stauts-${status}" data-order-id="${id}" data-order-key="${key}">
   <tr class="">
     <td class="">${id}</td>
     <td class="">${store_name}</td>
     <td class="">${price}</td>
     <td class=""><time class="timeago" datetime="${updated_at}">${updated_at}</time></td>
-    <td class="">${status_name}</td>
     <td class="">
-      {!! Form::open(['route' => ['order.destroy'], 'method' => 'delete', 'class' => 'form-inline']) !!}
       <input class="bind-button del-button btn btn-default" data-action="more" type="button" value="詳細" />
-      <a class="bind-button edit-button btn btn-default" href="${edit_link}">修改</a>      
+      {!! Form::open(['route' => ['order.update'], 'method' => 'put', 'class' => 'order-accept form-inline inline-my']) !!}          
+      {!! Form::hidden('id', '${id}') !!}
+      {!! Form::hidden('store_id', '${store_id}') !!}
+      {!! Form::hidden('step', 'accept') !!}
+      {!! Form::hidden('order_token', '${order_token}') !!}
+      {!! Form::submit('接受', ['class' => 'btn btn-warning']) !!}
+      {!! Form::close() !!}
+
+      {!! Form::open(['route' => ['order.update'], 'method' => 'put', 'class' => 'order-done form-inline inline-my']) !!}          
+      {!! Form::hidden('id', '${id}') !!}
+      {!! Form::hidden('store_id', '${store_id}') !!}
+      {!! Form::hidden('step', 'done') !!}
+      {!! Form::hidden('order_token', '${order_token}') !!}
+      {!! Form::submit('已付款', ['class' => 'btn btn-success']) !!}
+      {!! Form::close() !!}
+
+      {!! Form::open(['route' => ['order.destroy'], 'method' => 'delete', 'class' => 'order-del form-inline inline-my']) !!}
       {!! Form::hidden('id', '${id}') !!}
       {!! Form::hidden('order_token', '${order_token}') !!}
-      {!! Form::submit('刪除', ['class' => 'del-button btn btn-danger']) !!}
+      {!! Form::submit('刪除', ['class' => 'btn btn-danger']) !!}
       {!! Form::close() !!}
     </td>
   </tr>
 
   <tr class="order-tr-detail warning">
-    <th>名稱</th>
-    <th>單價</th>
-    <th>數量</th>
-    <th colspan="3">小計</th>
+    <th>名稱</th><th>單價</th><th>數量</th><th colspan="2">小計</th>
   </tr>
   
 </tbody>
@@ -65,10 +75,7 @@
 
 <script id="order-tr" type="text/x-handlebars-template">
 <tr class="order-tr-detail warning">
-    <td>${name}</td>
-    <td>${price}</td>
-    <td>${count}</td>
-    <td colspan="3">${sum}</td>
+    <td>${name}</td><td>${price}</td><td>${count}</td><td colspan="2">${sum}</td>
 </tr>
 </script>
 
@@ -78,8 +85,6 @@ var orders = {!! json_encode($orders) !!};
 var detail = {};
 $(function() {
     
-	$.removeCookie("{{ $order_cookie_name }}", { path: '/' });
-
     if(orders.length){
         for(var key in orders){
             var order_id = orders[key]["id"];

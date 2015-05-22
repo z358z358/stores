@@ -8,12 +8,14 @@ use Auth;
 use App\Order;
 use Cookie;
 use DB;
+use Hash;
+use App\Store;
 
 class OrderController extends Controller {
 
 	public function __construct()
 	{
-		$this->middleware('auth', ['except' => ['index']]);
+		$this->middleware('auth', ['except' => ['index', 'destroy']]);
 	}
 
 	/**
@@ -30,11 +32,13 @@ class OrderController extends Controller {
 		{
 			$user = Auth::user();
 			$orders = $user->orders()->unfinished()->orderByTime()->with('store')->get();
+			$orders = $this->withToken($orders);
 		}
 		else if($request->input('id') && $request->input('created_at'))
 		{
 			$where = array_only($request->all(), ['id', 'created_at']);
 			$orders = Order::idAndCreated($where)->with('store')->get();
+			$orders = $this->withToken($orders);
 			//dd($orders);
 		}
 
@@ -44,56 +48,47 @@ class OrderController extends Controller {
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
+	 * 店家管理未完成訂單頁面
+	 * @param  Store   $store   [description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
 	 */
-	public function create()
+	public function storeOrder(Store $store, Request $request)
 	{
-		//
+		DB::enableQueryLog();
+		$user = Auth::user();
+		if( $store->checkAuth() )
+		{
+			$orders = $store->orders()->unfinished()->orderByTime()->with('store')->get();
+			$orders = $this->withToken($orders);
+			return view('home.order.storeOrder', compact('user', 'orders'));
+		}
+			
 	}
 
 	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
+	 * 更新order
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
 	 */
-	public function store()
+	public function update(Request $request)
 	{
-		//
-	}
+		$order = Order::findOrfail($request->input('id'));
+		$store = Store::findOrfail($request->input('store_id'));
+		$step = $request->input('step');
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
+		// 檢查權限
+		if( $store->checkAuth() )
+		{	
+			// 檢查token
+			if( $order->checkToken( $request->input('order_token') ) && isset($order->step_status[$step]) )
+			{
+				$order->status = $order->step_status[$step]['key'];
+				$order->save();
+				flash()->success('更新訂單編號' . $order->id . ' 成功');
+			}
+		}
+		return redirect()->back();
 	}
 
 	/**
@@ -102,9 +97,37 @@ class OrderController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request)
 	{
-		//
-	}
+		$order = Order::findOrfail($request->input('id'));
+		// 檢查本人
+		if( (null === $order->user_id) || (Auth::check() && Auth::user()->id == $order->user_id) )
+		{	
+			// 檢查token
+			if( $order->checkToken( $request->input('order_token') ) )
+			{
+				$order->status = $order->step_status['del']['key'];
+				$order->save();
+				flash()->success('刪除訂單編號' . $order->id . ' 成功');
+			}
+		}
+		return redirect()->back();
+	}	
 
+	/**
+	 * 將model的token變成變數
+	 * @param  [type] $orders [description]
+	 * @return [type]         [description]
+	 */
+	public function withToken($orders)
+	{
+		$result = [];
+		foreach($orders as $order)
+		{
+			$order->order_token = $order->token;
+			$order->status_name = $order->step_status_num[$order->status]['name'];
+			$result[] = $order;
+		}
+		return $result;
+	}
 }

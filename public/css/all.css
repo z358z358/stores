@@ -8661,6 +8661,11 @@ body {
 	display: none;
 }
 
+.inline-my {
+  display: inline;
+}
+
+
 .fb-comments, .fb-comments * {
     width:100% !important;
 }
@@ -8683,4 +8688,8 @@ body {
 
 .item-one-more .remove-one, .item-three-more .remove-three{
 	display: inline-block;
+}
+
+.order-stauts-50 .order-done, .order-stauts-75 .order-accept{
+  display: none;
 }
