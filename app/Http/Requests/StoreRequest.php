@@ -28,4 +28,23 @@ class StoreRequest extends Request {
 		];
 	}
 
+	/**
+	 * 自訂的錯誤訊息
+	 * @return array
+	 */
+	public function messages()
+	{
+		$messages = [
+			'name.required' => '店名 為必填.',
+			'name.unique' => '此店名已使用. 請更換一個',
+
+			'info.required' => '簡介 為必填',
+
+			'slug.required' => '縮寫 為必填.',
+			'slug.unique' => '此縮寫已使用. 請更換一個',
+		];
+
+		return $messages;
+	}
+
 }

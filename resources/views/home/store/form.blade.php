@@ -1,21 +1,21 @@
 <div class="form-group">
     {!! Form::label('name', '店名:', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::text('name', null, ['class' => 'form-control']) !!}
+        {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required']) !!}
     </div>
 </div>
 
 <div class="form-group">
     {!! Form::label('slug', '縮寫:', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::text('slug', null, ['class' => 'form-control', 'placeholder' => '這欄決定您的商店網址']) !!}
+        {!! Form::text('slug', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => '這欄決定您的商店網址']) !!}
     </div>
 </div>
 
 <div class="form-group">
     {!! Form::label('info', '簡介:', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::textarea('info', null, ['class' => 'form-control']) !!}
+        {!! Form::textarea('info', null, ['class' => 'form-control', 'required' => 'required']) !!}
     </div>
 </div>
 

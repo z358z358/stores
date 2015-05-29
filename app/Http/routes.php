@@ -54,6 +54,7 @@ Route::group(['namespace' => 'Home'], function()
 
 	Route::get('{storeSlug}/menu', ['as' => 'menu.show', 'uses' => 'MenuController@show']);
 	Route::post('{storeSlug}/menu/submit', ['as' => 'menu.submit', 'uses' => 'MenuController@submit']);		
+	Route::get('{storeSlug}/order/finish', ['as' => 'store.order.finish', 'uses' =>'OrderController@storeOrderFinish']);
 	Route::get('{storeSlug}/order', ['as' => 'store.order', 'uses' =>'OrderController@storeOrder']);
 	Route::get('{storeSlug}/{name?}', ['as' => 'store.slug', 'uses' =>'StoreController@show']);
 

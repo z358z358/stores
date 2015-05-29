@@ -9,6 +9,7 @@ use App\Item;
 use App\Order;
 use Auth;
 use DB;
+use JavaScript;
 
 class MenuController extends Controller {
 
@@ -77,7 +78,9 @@ class MenuController extends Controller {
 			}
 		}
 
-		return view('home.menu.show', compact('store', 'items', 'itemAttrs', 'demarcation', 'chose', 'order_id'));
+		JavaScript::put(['__act' => 'home.menu.show', 'items' => $items, 'itemAttrs' => $itemAttrs, 'orderChose' => $chose]);
+
+		return view('home.menu.show', compact('store', 'demarcation', 'order_id'));
 	}
 
 	/**
@@ -90,7 +93,9 @@ class MenuController extends Controller {
 	{
 		$items = $store->items()->orderBy('status', 'asc')->get();
 
-		return view('home.menu.edit', compact('store', 'items'));
+		JavaScript::put(['__act' => 'home.menu.edit', 'items' => $items]);
+
+		return view('home.menu.edit', compact('store'));
 	}
 
 	/**
@@ -135,9 +140,11 @@ class MenuController extends Controller {
 		DB::enableQueryLog();
 		$item_list = $store->items()->lists('name', 'id');
 		$attrs = $this->getStoreItemAttrArray($store);
+
+		JavaScript::put(['__act' => 'home.menu.attrEdit', 'attrs' => $attrs]);
 		
 		//dd($attrs);
-		return view('home.menu.attrEdit', compact('store', 'item_list', 'attrs'));
+		return view('home.menu.attrEdit', compact('store', 'item_list'));
 	}
 
 	/**

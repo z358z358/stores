@@ -64,11 +64,19 @@ elixir(function(mix) {
         'jquery-ui_my.js',
     ], 'public/js/jquery-ui.js', 'resources/assets/js')
 
+    .scripts([
+        'item_my.js',
+    ], 'public/js/item_my.js', 'resources/assets/js')
+
+    .scripts([
+        'order_my.js',
+    ], 'public/js/order_my.js', 'resources/assets/js')
+
+
     //.scripts([
     //    'libs/react.js',
     //    '../../../public/js/react_my.js',
     //], 'public/js/react.js', 'resources/assets/js')
-
 
     .version([
         'css/all.css',
@@ -80,6 +88,8 @@ elixir(function(mix) {
         'js/google-map_my.js',
         //'js/react.js',
         'js/jquery-ui.js',
+        'js/item_my.js',
+        'js/order_my.js',
     ])
 
     .copy('./resources/assets/css/fonts', 'public/build/fonts')

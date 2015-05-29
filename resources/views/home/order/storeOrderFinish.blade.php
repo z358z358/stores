@@ -1,12 +1,13 @@
 @extends('app')
 
 @section('title')
-未完成的訂單
+完成的訂單
 @stop
 
 @section('content')
-@if ($orders)
-    <div class="table-responsive">
+@if ($orders_page)
+
+<div class="table-responsive">
     <table id="order-table" class="table table-hover table-striped">
         <thead>
             <tr>
@@ -19,12 +20,15 @@
         </thead>    
     </table>
 </div>
+<nav class="text-center">
+{!! $orders_page->render(); !!}
+</nav>
 
 @else
 
 <main class="bs-docs-masthead" id="content" role="main" tabindex="-1">
   <div class="container">
-    <p class="lead">沒有未完成的訂單</p>
+    <p class="lead">沒有完成的訂單</p>
   </div>
 </main>
 
@@ -42,21 +46,6 @@
     <td class=""><time class="timeago" datetime="${updated_at}">${updated_at}</time></td>
     <td class="">
       <input class="bind-button del-button btn btn-default" data-action="more" type="button" value="詳細" />
-      {!! Form::open(['route' => ['order.update'], 'method' => 'put', 'class' => 'order-accept form-inline inline-my']) !!}          
-      {!! Form::hidden('id', '${id}') !!}
-      {!! Form::hidden('store_id', '${store_id}') !!}
-      {!! Form::hidden('step', 'accept') !!}
-      {!! Form::hidden('order_token', '${order_token}') !!}
-      {!! Form::submit('接受', ['class' => 'btn btn-warning']) !!}
-      {!! Form::close() !!}
-
-      {!! Form::open(['route' => ['order.update'], 'method' => 'put', 'class' => 'order-done form-inline inline-my']) !!}          
-      {!! Form::hidden('id', '${id}') !!}
-      {!! Form::hidden('store_id', '${store_id}') !!}
-      {!! Form::hidden('step', 'done') !!}
-      {!! Form::hidden('order_token', '${order_token}') !!}
-      {!! Form::submit('已付款', ['class' => 'btn btn-success']) !!}
-      {!! Form::close() !!}
 
       {!! Form::open(['route' => ['order.destroy'], 'method' => 'delete', 'class' => 'order-del form-inline inline-my']) !!}
       {!! Form::hidden('id', '${id}') !!}

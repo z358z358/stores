@@ -151,6 +151,7 @@ return [
 		'Artdarek\OAuth\OAuthServiceProvider',
 		'Laracasts\Flash\FlashServiceProvider',
 		'Chencha\Share\ShareServiceProvider',
+		'Laracasts\Utilities\JavaScript\JavascriptServiceProvider',
 
 	],
 

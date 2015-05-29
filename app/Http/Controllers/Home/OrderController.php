@@ -10,8 +10,11 @@ use Cookie;
 use DB;
 use Hash;
 use App\Store;
+use JavaScript;
 
 class OrderController extends Controller {
+
+	protected $page_size = 15;
 
 	public function __construct()
 	{
@@ -25,7 +28,6 @@ class OrderController extends Controller {
 	 */
 	public function index(Request $request)
 	{
-		DB::enableQueryLog();
 		$user = New Auth;
 		$orders = [];
 		if(Auth::check())
@@ -43,6 +45,8 @@ class OrderController extends Controller {
 		}
 
 		$order_cookie_name = session('order_cookie_name');
+
+		JavaScript::put(['__act' => 'home.order.index', 'orders' => $orders]);
 		
 		return view('home.order.index', compact('user', 'orders', 'order_cookie_name'));
 	}
@@ -53,17 +57,37 @@ class OrderController extends Controller {
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	public function storeOrder(Store $store, Request $request)
-	{
-		DB::enableQueryLog();
-		$user = Auth::user();
+	public function storeOrder(Store $store)
+	{	
 		if( $store->checkAuth() )
 		{
 			$orders = $store->orders()->unfinished()->orderByTime()->with('store')->get();
 			$orders = $this->withToken($orders);
-			return view('home.order.storeOrder', compact('user', 'orders'));
-		}
+
+			JavaScript::put(['__act' => 'home.order.storeOrder', 'orders' => $orders]);
+
+			return view('home.order.storeOrder', compact('orders'));
+		}			
+	}
+
+	/**
+	 * 店家已完成的訂單頁面
+	 * @param  Store  $store [description]
+	 * @return [type]        [description]
+	 */
+	public function storeOrderFinish(Store $store)
+	{		
+		if( $store->checkAuth() )
+		{
+			$user = Auth::user();
+			$orders_page = $store->orders()->finished()->orderByTime()->with('store')->paginate($this->page_size);
+			$orders_page->setPath(''); // 網址可能有全形字 分頁的網址會錯誤
+			$orders = $this->withToken($orders_page);
 			
+			JavaScript::put(['__act' => 'home.order.storeOrder', 'orders' => $orders]);
+
+			return view('home.order.storeOrderFinish', compact('user', 'orders_page'));
+		}
 	}
 
 	/**
@@ -100,14 +124,16 @@ class OrderController extends Controller {
 	public function destroy(Request $request)
 	{
 		$order = Order::findOrfail($request->input('id'));
-		// 檢查本人
-		if( (null === $order->user_id) || (Auth::check() && Auth::user()->id == $order->user_id) )
+		$store = $order->store()->first();
+		// 檢查本人 或是店家
+		if( (null === $order->user_id) || (Auth::check() && Auth::user()->id == $order->user_id) ||	($store->checkAuth()) )
 		{	
 			// 檢查token
 			if( $order->checkToken( $request->input('order_token') ) )
 			{
-				$order->status = $order->step_status['del']['key'];
-				$order->save();
+				//$order->status = $order->step_status['del']['key'];
+				//$order->save();
+				$order->delete();
 				flash()->success('刪除訂單編號' . $order->id . ' 成功');
 			}
 		}

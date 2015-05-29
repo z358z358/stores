@@ -33,10 +33,16 @@ class Order extends Model {
 		return $query->where('updated_at', '<=', Carbon::now()->subDays($day));
 	}
 
-	// 未完成
+	// 未完成的
 	public function scopeUnfinished($query)
 	{
-		return $query->where('status', '!=', '100')->where('status', '!=', '0');
+		return $query->where('status', '!=', '100');
+	}
+
+	// 完成的
+	public function scopeFinished($query)
+	{
+		return $query->where('status', '=', '100');
 	}
 
 	// 從id和建立時間去找訂單
