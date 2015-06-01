@@ -1,12 +1,4 @@
 {
-  "css/all.css": "css/all-251ac6a9.css",
-  "js/all.js": "js/all-baa3574f.js",
-  "css/select2.css": "css/select2-1ebaecb5.css",
-  "js/select2.js": "js/select2-af6e0a07.js",
-  "css/sb-admin-2.css": "css/sb-admin-2-21b8772f.css",
-  "js/sb-admin-2.js": "js/sb-admin-2-ce086bb5.js",
-  "js/google-map_my.js": "js/google-map_my-90fbb05b.js",
-  "js/jquery-ui.js": "js/jquery-ui-227dc297.js",
-  "js/item_my.js": "js/item_my-cbbcddc4.js",
-  "js/order_my.js": "js/order_my-bd203f2e.js"
+  "css/all.css": "css/all-c1600c20.css",
+  "js/all.js": "js/all-432da44c.js"
 }

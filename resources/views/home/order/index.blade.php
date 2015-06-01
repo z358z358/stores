@@ -69,7 +69,4 @@
     <td colspan="3">${sum}</td>
 </tr>
 </script>
-
-<script src="{{ url( elixir('js/jquery-ui.js') ) }}" type="text/javascript"></script>
-<script src="{{ url( elixir('js/order_my.js') ) }}" type="text/javascript"></script>
 @stop

@@ -27,50 +27,29 @@ elixir(function(mix) {
         'libs/bootstrap-social.css',
         'libs/font-awesome.css',
     	'libs/landing-page.css',
+        'libs/select2.css',
+        'libs/sb-admin-2.css',
+        
         'my.css',
     ], 'public/css/all.css', 'resources/assets/css')
-
-    .styles([
-        'libs/select2.css',
-    ], 'public/css/select2.css', 'resources/assets/css')
-
-    .styles([
-        'libs/sb-admin-2.css',
-    ], 'public/css/sb-admin-2.css', 'resources/assets/css')
 
     .scripts([
     	'libs/jquery.js',
     	'libs/bootstrap.js',
         'libs/jquery.timeago.js',
-    ], 'public/js/all.js', 'resources/assets/js')
-
-    .scripts([
-        'libs/select2.js',
-        'select2_my.js',
-    ], 'public/js/select2.js', 'resources/assets/js')
-
-    .scripts([
-        'libs/sb-admin-2.js',
-    ], 'public/js/sb-admin-2.js', 'resources/assets/js')
-
-    .scripts([
-        'google-map_my.js',
-    ], 'public/js/google-map_my.js', 'resources/assets/js')
-
-    .scripts([
+        'libs/select2.js',    
+        'libs/sb-admin-2.js',        
         'libs/jquery-ui.js',
         'libs/jquery.tmpl.js',
         'libs/jquery.cookie.js',
-        'jquery-ui_my.js',
-    ], 'public/js/jquery-ui.js', 'resources/assets/js')
+        'libs/vue.js',
 
-    .scripts([
-        'item_my.js',
-    ], 'public/js/item_my.js', 'resources/assets/js')
+        //'google-map_my.js',
+        'select2_my.js',
+        //'item_my.js',
+        //'order_my.js',
+    ], 'public/js/all.js', 'resources/assets/js')
 
-    .scripts([
-        'order_my.js',
-    ], 'public/js/order_my.js', 'resources/assets/js')
 
 
     //.scripts([
@@ -81,15 +60,6 @@ elixir(function(mix) {
     .version([
         'css/all.css',
         'js/all.js',
-        'css/select2.css',
-        'js/select2.js',
-        'css/sb-admin-2.css',
-        'js/sb-admin-2.js',
-        'js/google-map_my.js',
-        //'js/react.js',
-        'js/jquery-ui.js',
-        'js/item_my.js',
-        'js/order_my.js',
     ])
 
     .copy('./resources/assets/css/fonts', 'public/build/fonts')

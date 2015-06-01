@@ -91,7 +91,7 @@ class MenuController extends Controller {
 	 */
 	public function edit(Store $store)
 	{
-		$items = $store->items()->orderBy('status', 'asc')->get();
+		$items = $store->items()->get();
 
 		JavaScript::put(['__act' => 'home.menu.edit', 'items' => $items]);
 
@@ -108,7 +108,7 @@ class MenuController extends Controller {
 	{
 		//dd($request->all());
 		$items = [];
-		$count = 1;
+		$count = 2;
 
 		if($request->input('items')) 
 		{

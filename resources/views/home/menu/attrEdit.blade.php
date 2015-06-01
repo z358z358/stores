@@ -60,7 +60,5 @@
   </tr>
 </tbody>
 </script>
-@include('partials.select2')
-<script src="{{ url( elixir('js/jquery-ui.js') ) }}" type="text/javascript"></script>
-<script src="{{ url( elixir('js/item_my.js') ) }}" type="text/javascript"></script>
+
 @stop

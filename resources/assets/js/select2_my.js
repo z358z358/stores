@@ -1,7 +1,7 @@
 "use strict";
 
 $(function() {
-	var select2_placeholder_text = (select2_placeholder_text)? select2_placeholder_text : '選擇...';
+	var select2_placeholder_text = (typeof select2_placeholder_text == 'string')? select2_placeholder_text : '選擇...';
 
 	$(".select2").select2({
 		placeholder: select2_placeholder_text,

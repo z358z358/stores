@@ -117,7 +117,6 @@
 @endsection
 
 @section('footer')
-    @include('partials.sb-admin-2')
 
     <!-- Google+ JavaScript API -->
     <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'zh-TW'}</script>
