@@ -1,12 +1,15 @@
 <?php namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
+use Validator;
 
 class AuthController extends Controller
 {
+    protected $rule_no = '';
 
     /*
     |--------------------------------------------------------------------------
