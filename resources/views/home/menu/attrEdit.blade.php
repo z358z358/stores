@@ -5,8 +5,8 @@
 @stop
 
 @section('content')
-<div class="container-fluid">  
-  @include('home.menu.nav')          
+<div id="item" class="container-fluid">
+  @include('home.menu.nav')
   {!! Form::model($store, ['route' => ['menu.attr.update', $store->id], 'method' => 'post', 'class' => 'form-horizontal']) !!}
   <div class="row">
     <div class="col-md-12">
@@ -21,44 +21,60 @@
                   <th></th>
               </tr>
               </thead>
+              <tbody class="attr-tbody" v-repeat="itemAttr: itemAttrs" track-by="id">
+                <tr v-show="! itemAttr.edit">
+                  <td class="attr-td-name col-md-3" v-text="itemAttr.name"></td>
+                  <td class="col-md-9">
+                    <input class="btn btn-default" type="button" value="修改" v-on="click: itemAttr.edit = true" />
+                    <input class="btn btn-danger" type="button" value="刪除" v-on="click: removeItemAttr(itemAttr)" />
+                  </td>
+                </tr>
+                <tr v-show="itemAttr.edit">
+                  <td class="col-md-3"><input type="text" name="attr[@{{ itemAttr.id }}][name]" placeholder="名稱" v-model="itemAttr.name" /></td>
+                  <td class="col-md-9">
+                    <p v-if="itemAttr.option.length">選項</p>
+                    <div class="form-group row div-option" v-repeat="itemAttr.option">
+                      <div class="col-sm-3">
+                      <input type="hidden" class="form-control" name="attr[@{{ itemAttr.id }}][option][id][]" v-model="id">
+                      <input type="text" class="form-control" name="attr[@{{ itemAttr.id }}][option][name][]" placeholder="名稱" v-model="name">
+                      </div>
+                      <div class="col-sm-2"><input type="number" class="form-control" name="attr[@{{ itemAttr.id }}][option][price][]" placeholder="單價變動" v-model="price"></div>
+                      <div class="col-xs-2"><input class="btn btn-danger" type="button" value="刪除" v-on="click: removeItemAttrOption(itemAttr, $index)"></div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2">最多可以選幾個</label>
+                      <div class="col-sm-10">
+                        <input type="number" name="attr[@{{ itemAttr.id }}][max]" v-model="itemAttr.max" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2">套用的商品</label>
+                      <div class="col-sm-10">
+                    {!! Form::select('attr[@{{ itemAttr.id }}][item_id][]', $itemList, null, ['class' => 'form-control select2NoTags', 'multiple', 'v-model' => 'itemAttr.item_id']) !!}
+                      </div>
+                    </div>
+                    <input type="hidden" name="attr[@{{ itemAttr.id }}][attr_id]" v-model="itemAttr.id" />
+                    <input class="btn btn-default" type="button" value="確定" v-on="click: editDone(itemAttr)" />
+                    <button class="btn btn-default" type="button" v-on="click: newOption(itemAttr)">新增選項</button>
+                  </td>
+                </tr>
+              </tbody>
             </table>
-          <input id="attr-add-new" type="button" value="新增屬性" />
-        </div>              
+          <input id="attr-add-new" type="button" value="新增屬性" v-on="click: newItemAttr" />
+        </div>
       </div>
     </div>
 
   </div>
   {!! Form::submit('送出', ['class' => 'btn btn-primary form-control']) !!}
   {!! Form::close() !!}
+  <pre>@{{ $data | json}}</pre>
+
 </div>
 @endsection
 
 @section('footer')
-<script id="attr-tbody" type="text/x-handlebars-template">
-<tbody id="attr-tbody-${id}" class="attr-tbody" data-id="${id}">
-  <tr class="attr-tr-show tr-show">
-    <td id="attr-${id}-name" class="attr-td-name col-md-3">${name}</td>
-    <td class="col-md-9">
-      <input class="bind-button edit-button btn btn-default" data-action="edit" type="button" value="修改" />
-      <input class="bind-button del-button btn btn-danger" data-action="del" type="button" value="刪除" />
-    </td>
-  </tr>
 
-  <tr class="attr-tr-edit tr-edit">
-    <td class="col-md-3"><input type="text" name="attr[${id}][name]" data-pre-value="${name}" data-show-id="attr-${id}-name" value="${name}" placeholder="名稱" /></td>
-    <td class="col-md-9">
-
-      <div class="div-option"></div>
-      <input class="bind-button btn btn-default" data-action="option_new" type="button" value="新增選項" />
-      <input type="number" name="attr[${id}][max]" data-pre-value="${max}" value="${max}" placeholder="最多可以選幾個" />
-      {!! Form::select('attr[${id}][item_id][]', $item_list, null, ['data-pre-value' => '${item_id}', 'class' => 'attr-item-select form-control select2NoTags', 'multiple']) !!}
-
-      <input type="hidden" name="attr[${id}][attr_id]" value="${attr_id}" />
-      <input class="bind-button btn btn-default" data-action="edit_done" type="button" value="確定" />
-      <input class="bind-button btn btn-default" data-action="edit_cancel" type="button" value="取消" />
-    </td>
-  </tr>
-</tbody>
-</script>
+@include('partials.tmp')
 
 @stop

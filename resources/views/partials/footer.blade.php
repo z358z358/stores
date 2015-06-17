@@ -1,4 +1,4 @@
-<!-- Scripts -->
+<!-- footer -->
 <script src="{{ url( elixir('js/all.js') ) }}" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -32,3 +32,4 @@
     console.log('/****************************** End Queries ***********************************/');
 </script>
 @endif
+<!-- footer END -->

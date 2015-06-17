@@ -26,6 +26,6 @@
 
 	@include('partials.footer')
 
-	@yield('footer')	
+	@yield('footer')
 </body>
 </html>

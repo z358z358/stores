@@ -50,7 +50,9 @@ elixir(function(mix) {
         //'order_my.js',
     ], 'public/js/all.js', 'resources/assets/js')
 
-
+    .scripts([
+        'google-map_my.js',
+    ], 'public/js/google-map_my.js', 'resources/assets/js')
 
     //.scripts([
     //    'libs/react.js',
@@ -60,6 +62,7 @@ elixir(function(mix) {
     .version([
         'css/all.css',
         'js/all.js',
+        'js/google-map_my.js',
     ])
 
     .copy('./resources/assets/css/fonts', 'public/build/fonts')

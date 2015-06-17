@@ -6,17 +6,15 @@ class Item extends Model {
 
 	protected $fillable = ['name', 'price', 'status'];
 
-	public function scopeStatusOn($query)
-	{
-		$query->where('status', '>=', '1')->orderBy('status', 'asc');
+	public function scopeStatusOn($query) {
+		$query->where('status', '>=', '1');
 	}
 
 	/**
 	 * 對應的Store
 	 * @return [type] [description]
 	 */
-	public function store()
-	{
+	public function store() {
 		return $this->belongsTo('App\Store');
 	}
 
@@ -24,8 +22,7 @@ class Item extends Model {
 	 * 有許多attrs
 	 * @return [type] [description]
 	 */
-	public function itemAttrs()
-	{
+	public function itemAttrs() {
 		return $this->belongsToMany('App\ItemAttr', 'item_attr_item');
 	}
 

@@ -60,6 +60,5 @@
 </div>
 
 @section('footer')
-    @include('partials.select2', ['select2_placeholder_text' => '選擇標籤'])
     <script src="{{ url( elixir('js/google-map_my.js') ) }}" type="text/javascript"></script>
 @endsection
