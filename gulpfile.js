@@ -42,17 +42,13 @@ elixir(function(mix) {
         'libs/jquery-ui.js',
         'libs/jquery.tmpl.js',
         'libs/jquery.cookie.js',
-        'libs/vue.js',
+        'libs/vue.0.12.js',
 
-        //'google-map_my.js',
+        'google-map_my.js',
         'select2_my.js',
         //'item_my.js',
         //'order_my.js',
     ], 'public/js/all.js', 'resources/assets/js')
-
-    .scripts([
-        'google-map_my.js',
-    ], 'public/js/google-map_my.js', 'resources/assets/js')
 
     //.scripts([
     //    'libs/react.js',
@@ -62,7 +58,6 @@ elixir(function(mix) {
     .version([
         'css/all.css',
         'js/all.js',
-        'js/google-map_my.js',
     ])
 
     .copy('./resources/assets/css/fonts', 'public/build/fonts')

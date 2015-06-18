@@ -32,7 +32,7 @@
           <tr class="menu-item-tr">
             <td class="col-md-6">
               <span v-text="item.name"></span>
-              <small class="chose-count"></small>
+              <small class="chose-count" v-if="chose[item.choseKey]" v-text="chose[item.choseKey] && chose[item.choseKey].count"></small>
               <ul>
                 <li v-repeat="attr :item.attrs">
                   <span v-text="attr.name"></span>
@@ -42,10 +42,12 @@
             </td>
             <td class="col-md-3"><span v-text="item.totalPrice | currency"></span></td>
             <td class="">
-              <input class="btn btn-default" type="button" value="+3" />
-              <input class="btn btn-default" type="button" value="+1" />
-              <input class="btn btn-default" type="button" value="-1" />
-              <input class="btn btn-default" type="button" value="-3" />
+              <button type="button" class="btn btn-default" v-on="click: addChoseCount(item, 3)">+3</button>
+              <button type="button" class="btn btn-default" v-on="click: addChoseCount(item, 1)">+1</button>
+              <span v-show="chose[item.choseKey]">
+                <button type="button" class="btn btn-default" v-on="click: addChoseCount(item, -1)">-1</button>
+                <button type="button" class="btn btn-danger" v-on="click: addChoseCount(item, 0)">清除</button>
+              </span>
               <input type="hidden" name="item_id[]" value="${id}" />
               <input type="hidden" name="count[]" value="${count}" />
               <input type="hidden" name="price[]" value="${price}" />

@@ -1,6 +1,7 @@
 <script type="text/javascript">
 var items = items || [];
 var itemAttrs = itemAttrs || [];
+var chose = chose || {};
 var maxId = 0;
 var demarcation = demarcation || '|';
 
@@ -8,6 +9,8 @@ items.forEach( function (item) {
   var item_id = parseInt(item.id);
   item.edit = false;
   item.totalPrice = item.price;
+  item.choseKey = item_id;
+  item.fullName = item.name;
   maxId = (item_id > maxId) ? item_id : maxId;
 });
 
@@ -24,7 +27,7 @@ itemAttrs.forEach( function (itemAttr) {
       var a = $.grep(items, function(e){ return e.id == item_id; });
       if (a.length) {
         a[0].attrs = a[0].attrs || {};
-        a[0].attrs[itemAttrId] = $.extend(true, {}, itemAttr)
+        a[0].attrs[itemAttrId] = $.extend(true, {}, itemAttr);
       }
     });
   }
@@ -34,10 +37,11 @@ new Vue({
   el: '#item',
 
   data: {
-    maxId: maxId,
-    demarcation: demarcation,
+    chose: chose,
     items: items,
     itemAttrs: itemAttrs,
+    maxId: maxId,
+    demarcation: demarcation,
 
     filters: {
       onShelf: function (item) {
@@ -47,10 +51,6 @@ new Vue({
       offShelf: function (item) {
         return item.status < 0;
       },
-
-      optionClicked: function(option) {
-        return option.clicked;
-      }
     }
   },
 
@@ -133,6 +133,7 @@ new Vue({
 
     // 建立訂單 點屬性checkbox
     clickItemAttr: function (item, itemAttr, option) {
+      var options = item.options || {};
       var optionClicked = $.grep(itemAttr.option, function(e){ return e.clicked; });
       itemAttr.clickCount = optionClicked.length;
 
@@ -146,12 +147,56 @@ new Vue({
       var add = (option.clicked) ? 1 : -1;
       item.totalPrice += option.price*add;
 
-      var choseKey = item.id + demarcation;
+      // 更新options
+      options[itemAttr.id] = [];
       optionClicked.forEach(function (option){
-        choseKey += itemAttr.id + demarcation + option.id;
+        options[itemAttr.id].push(option.id);
       });
-      // 更新choseKey
+      options[itemAttr.id].sort();
+      item.$set('options', options);
+
+      // 更新chosekey fullName
+      var choseKey = item.id;
+      var fullName = item.name;
+      for(var attrId in item.options){
+        for(var optionIndex in item.options[attrId]){
+          var optionId = item.options[attrId][optionIndex];
+          choseKey += this.demarcation + attrId + this.demarcation + optionId;
+
+          var tmpOption = $.grep(item.attrs[attrId]["option"], function(e){ return e.id == optionId; });
+          fullName = fullName + "," + tmpOption[0]['name'];
+        }
+      }
       item.$set('choseKey', choseKey);
+      item.$set('fullName', fullName);
+
+
+    },
+
+    // 增加-減少
+    addChoseCount: function (item, count) {
+      var choseKey = item.choseKey;
+      var chose = this.chose[choseKey] || {
+          id: item.id,
+          price: item.totalPrice,
+          name: item.fullName,
+          simpleName: item.name,
+          count: 0
+        };
+
+      if(count == 0){
+        chose['count'] = 0;
+      }
+      else{
+        chose['count'] += count;
+      }
+
+      if(isNaN(chose["count"]) || chose["count"] <= 0){
+        this.chose.$delete(choseKey);
+      }
+      else{
+        this.chose.$set(choseKey, chose);
+      }
     }
 
   }
