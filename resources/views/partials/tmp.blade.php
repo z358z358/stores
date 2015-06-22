@@ -1,9 +1,14 @@
 <script type="text/javascript">
+Vue.config.debug = true // turn on debugging mode
+$.cookie.json = true;
+
 var items = items || [];
 var itemAttrs = itemAttrs || [];
-var chose = chose || {};
 var maxId = 0;
 var demarcation = demarcation || '|';
+var cookie_name = cookie_name || 'none';
+var chose = $.cookie(cookie_name) || {};
+var orders = orders || [];
 
 items.forEach( function (item) {
   var item_id = parseInt(item.id);
@@ -37,6 +42,7 @@ new Vue({
   el: '#item',
 
   data: {
+    orders: orders,
     chose: chose,
     items: items,
     itemAttrs: itemAttrs,
@@ -62,6 +68,18 @@ new Vue({
       offShelf: function() {
           return this.items.filter(this.filters.offShelf);
       },
+
+      info: function() {
+        var info = {"price": 0, "count": 0, "kind": 0};
+        var chose = this.chose;
+        for (var key in chose) {
+          info.price += chose[key]["price"]*chose[key]["count"];
+          info.count += chose[key]["count"];
+          info.kind++;
+        }
+
+        return info;
+      }
   },
 
   watch: {
@@ -71,12 +89,13 @@ new Vue({
         placeholder: '選擇商品',
         width: '100%'
       });
-    }
+    },
   },
 
   ready: function () {
     $( ".sortable" ).sortable();
     $( ".sortable" ).disableSelection();
+    this.checkChose();
   },
 
   methods: {
@@ -100,7 +119,8 @@ new Vue({
         item_id: [],
         option: [],
         max: 0,
-        edit: true
+        edit: true,
+        name: ''
       });
     },
 
@@ -175,13 +195,14 @@ new Vue({
 
     // 增加-減少
     addChoseCount: function (item, count) {
-      var choseKey = item.choseKey;
+      var choseKey = (typeof item == "string") ? item : item.choseKey;
       var chose = this.chose[choseKey] || {
           id: item.id,
           price: item.totalPrice,
           name: item.fullName,
           simpleName: item.name,
-          count: 0
+          count: 0,
+          status: item.status
         };
 
       if(count == 0){
@@ -197,6 +218,12 @@ new Vue({
       else{
         this.chose.$set(choseKey, chose);
       }
+      $.cookie(cookie_name, this.chose, { path: '/' });
+    },
+
+    // 刪掉有問題的chose
+    checkChose: function () {
+      if(typeof errorChoseKey == "string") this.chose.$delete(errorChoseKey);
     }
 
   }

@@ -59,6 +59,7 @@ class MenuController extends Controller {
 		$demarcation = $this->demarcation;
 		$chose = [];
 		$order_id = 0;
+		$errorChoseKey = $request->session()->get('errorChoseKey');
 
 		if ($request->input('id') && $request->input('created_at')) {
 			$where = array_only($request->all(), ['id', 'created_at']);
@@ -69,7 +70,14 @@ class MenuController extends Controller {
 			}
 		}
 
-		JavaScript::put(['items' => $items, 'itemAttrs' => $itemAttrs, 'orderChose' => $chose, 'demarcation' => $demarcation]);
+		JavaScript::put([
+			'items' => $items,
+			'itemAttrs' => $itemAttrs,
+			'orderChose' => $chose,
+			'demarcation' => $demarcation,
+			'cookie_name' => $store->order_cookie_name,
+			'errorChoseKey' => $errorChoseKey,
+		]);
 
 		return view('home.menu.show', compact('store', 'order_id'));
 	}
@@ -197,7 +205,7 @@ class MenuController extends Controller {
 
 		if (isset($clear['result']) && $clear['result'] == false) {
 			flash()->error($clear['msg']);
-			return redirect(route('menu.show', $store->slug));
+			return redirect(route('menu.show', $store->slug))->with('errorChoseKey', $clear['errorChoseKey']);
 		}
 
 		// 檢查訂單
@@ -257,6 +265,11 @@ class MenuController extends Controller {
 			$content['id'] = $content['attr_id'] = $attr->id;
 
 			if ($type == 'keyValue') {
+				$options = [];
+				foreach ($content['option'] as $option) {
+					$options[$option['id']] = $option;
+				}
+				$content['option'] = $options;
 				$attrs[$attr->id] = $content;
 			} else {
 				$attrs[] = $content;
@@ -315,6 +328,7 @@ class MenuController extends Controller {
 		$clear = [];
 		$items = $store->items()->get();
 		$itemAttrs = $this->getStoreItemAttrArray($store, 'keyValue');
+		//dd($chose, $itemAttrs);
 
 		foreach ($chose as $key => $data) {
 			if (!is_array($data) || is_null($data['count']) || ($data['count'] = intval($data['count'])) <= 0) {
@@ -338,15 +352,16 @@ class MenuController extends Controller {
 				for ($i = 1; $i < $count; $i += 2) {
 					$attr_id = $tmp[$i];
 					$attr = isset($itemAttrs[$attr_id]) ? $itemAttrs[$attr_id] : [];
-					if (!$attr || !in_array($one['id'], $attr['item_id']) || is_null($attr['option'][$tmp[$i + 1]])) {
+					$option_id = $tmp[$i + 1];
+					if (!$attr || !in_array($one['id'], $attr['item_id']) || is_null($attr['option'][$option_id])) {
 						$clear = ['result' => false, 'msg' => '查無此商品:' . $data['name']];
 						break 2;
 					}
 
-					$item_price += $attr['option'][$tmp[$i + 1]];
+					$item_price += $attr['option'][$option_id]['price'];
 					$tmp123[] = $item->toArray();
-					$tmp123[] = $attr['option'][$tmp[$i + 1]];
-					$one['attr'][] = [$tmp[$i] => $tmp[$i + 1]];
+					$tmp123[] = $attr['option'][$option_id];
+					$one['attr'][] = [$tmp[$i] => $option_id];
 					$one['attr_count'][$tmp[$i]] = (isset($one['attr_count'][$tmp[$i]])) ? $one['attr_count'][$tmp[$i]] : 0;
 					$one['attr_count'][$tmp[$i]]++;
 				}
@@ -361,7 +376,7 @@ class MenuController extends Controller {
 			}
 
 			if ($item_price != $data['price']) {
-				$clear = ['result' => false, 'msg' => '商品價錢不符合:' . $data['name'] . ' 正確單價:' . $item->price];
+				$clear = ['result' => false, 'msg' => '商品價錢不符合:' . $data['name'] . ' 正確單價:' . $item_price];
 				//dd($tmp123 , $chose , $item->toArray());
 				break;
 			}
@@ -379,6 +394,8 @@ class MenuController extends Controller {
 				$length = isset($value['attr']) ? count($value['attr']) : 0;
 				return ($value['id']) + $length;
 			});
+		} else {
+			$clear['errorChoseKey'] = $key;
 		}
 		//dd($clear, $chose, $items, $itemAttrs);
 		return $clear;

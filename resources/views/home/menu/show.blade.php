@@ -16,7 +16,7 @@
 
   <ul id="myTab" class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#menu" id="menu-tab" role="tab" data-toggle="tab" aria-controls="menu" aria-expanded="true">Menu</a></li>
-    <li role="presentation" class=""><a href="#chose" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="false">已選</a></li>
+    <li role="presentation" v-show="info.kind"><a href="#chose" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="false">已選</a></li>
   </ul>
   <div id="myTabContent" class="tab-content">
     <div role="tabpanel" class="tab-pane fade active in" id="menu" aria-labelledby="menu-tab">
@@ -48,10 +48,6 @@
                 <button type="button" class="btn btn-default" v-on="click: addChoseCount(item, -1)">-1</button>
                 <button type="button" class="btn btn-danger" v-on="click: addChoseCount(item, 0)">清除</button>
               </span>
-              <input type="hidden" name="item_id[]" value="${id}" />
-              <input type="hidden" name="count[]" value="${count}" />
-              <input type="hidden" name="price[]" value="${price}" />
-              <input type="hidden" name="item_attrs[]" value="${item_attrs}" />
             </td>
           </tr>
         </tbody>
@@ -70,33 +66,29 @@
             <th></th>
         </tr>
         </thead>
-        <tbody class="item-tbody">
-          <tr class="menu-item-tr">
+        <tbody v-repeat="chose | orderBy 'status'">
+          <tr>
             <td class="col-md-6">
               <span v-text="name"></span>
-              <small class="chose-count"></small>
-              <ul></ul>
             </td>
-            <td class="col-md-3"><span class="item-price-total" v-text="price"></span><small class="item-price-str"></small></td>
-            <td class="col-md-1"></td>
+            <td class="col-md-3" v-text="price"></td>
+            <td class="col-md-1" v-text="count"></td>
             <td class="">
-              <input class="btn btn-default" type="button" value="+3" />
-              <input class="btn btn-default" type="button" value="+1" />
-              <input class="btn btn-default" type="button" value="-1" />
-              <input class="btn btn-default" type="button" value="-3" />
-              <input type="hidden" name="item_id[]" value="${id}" />
-              <input type="hidden" name="count[]" value="${count}" />
-              <input type="hidden" name="price[]" value="${price}" />
-              <input type="hidden" name="item_attrs[]" value="${item_attrs}" />
+              <button type="button" class="btn btn-default" v-on="click: addChoseCount($key, 3)">+3</button>
+              <button type="button" class="btn btn-default" v-on="click: addChoseCount($key, 1)">+1</button>
+              <span>
+                <button type="button" class="btn btn-default" v-on="click: addChoseCount($key, -1)">-1</button>
+                <button type="button" class="btn btn-danger" v-on="click: addChoseCount($key, 0)">清除</button>
+              </span>
             </td>
           </tr>
         </tbody>
       </table>
       <div class="chose-info"></div>
-      {!! Form::hidden('chose', '', ['id' => 'chose']) !!}
-      {!! Form::hidden('info', '', ['id' => 'info']) !!}
+      {!! Form::hidden('chose', '@{{ chose | json}}') !!}
+      {!! Form::hidden('info', '@{{ info | json}}') !!}
       {!! Form::hidden('order_id', $order_id) !!}
-      {!! Form::submit('結帳', ['class' => 'btn btn-primary form-control']) !!}
+      {!! Form::submit('結帳', ['class' => 'btn btn-primary form-control', 'v-show' => 'info.kind']) !!}
       {!! Form::close() !!}
     </div>
   </div>
