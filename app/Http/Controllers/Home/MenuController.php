@@ -52,19 +52,19 @@ class MenuController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show(Store $store, Request $request) {
+	public function show(Store $store, Order $order, $created_at = '') {
 		DB::enableQueryLog();
 		$items = $store->items()->statusOn()->get();
 		$itemAttrs = $this->getStoreItemAttrArray($store);
 		$demarcation = $this->demarcation;
-		$chose = [];
+		$chose = null;
 		$order_id = 0;
-		$errorChoseKey = $request->session()->get('errorChoseKey');
-
-		if ($request->input('id') && $request->input('created_at')) {
-			$where = array_only($request->all(), ['id', 'created_at']);
+		$errorChoseKey = session()->get('errorChoseKey');
+		if ($order && $created_at) {
+			$where = ['id' => $order->id, 'created_at' => $created_at];
 			$order = $store->orders()->idAndCreated($where)->first();
 			if ($order) {
+				flash()->warning('您正在編輯訂單' . $order->id . '');
 				$chose = $order->content_array['chose'];
 				$order_id = $order->id;
 			}
@@ -73,9 +73,9 @@ class MenuController extends Controller {
 		JavaScript::put([
 			'items' => $items,
 			'itemAttrs' => $itemAttrs,
-			'orderChose' => $chose,
+			'chose' => $chose,
 			'demarcation' => $demarcation,
-			'cookie_name' => $store->order_cookie_name,
+			'order_cookie_name' => $store->order_cookie_name,
 			'errorChoseKey' => $errorChoseKey,
 		]);
 

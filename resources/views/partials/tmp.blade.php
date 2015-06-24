@@ -6,9 +6,15 @@ var items = items || [];
 var itemAttrs = itemAttrs || [];
 var maxId = 0;
 var demarcation = demarcation || '|';
-var cookie_name = cookie_name || 'none';
-var chose = $.cookie(cookie_name) || {};
+var order_cookie_name = order_cookie_name || '';
+var chose = chose || $.cookie(order_cookie_name);
+chose = (Object.prototype.toString.call(chose) === '[object Object]') ? chose : {};
 var orders = orders || [];
+var old_cookie_name = old_cookie_name || '';
+// 完成頁 刪掉舊cookie
+if(order_cookie_name && orders.length) $.removeCookie(order_cookie_name, { path: '/' });
+
+
 
 items.forEach( function (item) {
   var item_id = parseInt(item.id);
@@ -38,6 +44,10 @@ itemAttrs.forEach( function (itemAttr) {
   }
 });
 
+orders.forEach( function (order) {
+  order.showDetail = false;
+});
+
 new Vue({
   el: '#item',
 
@@ -57,6 +67,12 @@ new Vue({
       offShelf: function (item) {
         return item.status < 0;
       },
+    }
+  },
+
+  filters: {
+    removeZero: function (price) {
+      return price.replace(".00", "");
     }
   },
 
@@ -96,6 +112,9 @@ new Vue({
     $( ".sortable" ).sortable();
     $( ".sortable" ).disableSelection();
     this.checkChose();
+
+    var choseTab = $("#myTab #chose-tab");
+    if(!$.isEmptyObject(this.chose) && choseTab) choseTab.trigger( "click" );
   },
 
   methods: {
@@ -217,6 +236,11 @@ new Vue({
       }
       else{
         this.chose.$set(choseKey, chose);
+      }
+
+      // 若都沒選了 就回到menu
+      if($.isEmptyObject(this.chose)){
+        $("#myTab #menu-tab").trigger( "click" );
       }
       $.cookie(cookie_name, this.chose, { path: '/' });
     },

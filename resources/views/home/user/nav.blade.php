@@ -1,5 +1,5 @@
-<div class="col-md-8 col-md-offset-2">
-    <div class="navbar-collapse navbar-ex1-collapse">
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-8 col-md-offset-2 col-sm-offset-2">
         <ul class="nav navbar-nav side-nav">
             <li class="active">
                 <a href="{{ url('settings/main/edit') }}"><i class="fa fa-fw fa-user"></i> 修改會員資料</a>
@@ -10,17 +10,6 @@
             <li>
                 <a href="{{ url('settings/email/edit') }}"><i class="fa fa-fw fa-envelope-o"></i> 修改/認證E-mail</a>
             </li>
-            <!--<li>
-                <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
-                <ul id="demo" class="collapse">
-                    <li>
-                        <a href="#">Dropdown Item</a>
-                    </li>
-                    <li>
-                        <a href="#">Dropdown Item</a>
-                    </li>
-                </ul>
-            </li>-->
         </ul>
     </div>
 </div>

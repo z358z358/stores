@@ -29,26 +29,6 @@ body {
     width:100% !important;
 }
 
-.form-table .tr-edit {
-	display: none;
-}
-
-#item-table .del-button, #item-table .off-button{
- 	display: none;
-}
-
-#item-table-remove .edit-button, #item-table-remove .on-button{
- 	display: none;
-}
-
-#menu-item-table .menu-all-hidden, #chose-table .menu-chose-hidden{
-	display: none;
-}
-
-.item-one-more .remove-one, .item-three-more .remove-three{
-	display: inline-block;
-}
-
-.order-stauts-50 .order-done, .order-stauts-75 .order-accept{
-  display: none;
+.btn-chose .btn {
+  margin: 2.5px;
 }

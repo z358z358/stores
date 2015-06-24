@@ -1,7 +1,7 @@
 <?php namespace App\Providers;
 
-use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Routing\Router;
 
 class RouteServiceProvider extends ServiceProvider {
 
@@ -20,18 +20,19 @@ class RouteServiceProvider extends ServiceProvider {
 	 * @param  \Illuminate\Routing\Router  $router
 	 * @return void
 	 */
-	public function boot(Router $router)
-	{
+	public function boot(Router $router) {
 		parent::boot($router);
 
-		$router->bind('store', function($id)
-		{
+		$router->bind('store', function ($id) {
 			return \App\Store::findOrFail($id);
 		});
 
-		$router->bind('storeSlug', function($slug)
-		{
+		$router->bind('storeSlug', function ($slug) {
 			return \App\Store::findBySlug($slug);
+		});
+
+		$router->bind('orderId', function ($id) {
+			return \App\Order::findOrFail($id);
 		});
 	}
 
@@ -41,10 +42,8 @@ class RouteServiceProvider extends ServiceProvider {
 	 * @param  \Illuminate\Routing\Router  $router
 	 * @return void
 	 */
-	public function map(Router $router)
-	{
-		$router->group(['namespace' => $this->namespace], function($router)
-		{
+	public function map(Router $router) {
+		$router->group(['namespace' => $this->namespace], function ($router) {
 			require app_path('Http/routes.php');
 		});
 	}

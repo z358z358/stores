@@ -35,7 +35,7 @@ class OrderController extends Controller {
 		}
 		$order_cookie_name = session('order_cookie_name');
 
-		JavaScript::put(['orders' => $orders]);
+		JavaScript::put(['orders' => $orders, 'order_cookie_name' => $order_cookie_name]);
 
 		return view('home.order.index');
 	}
@@ -48,12 +48,14 @@ class OrderController extends Controller {
 	 */
 	public function storeOrder(Store $store) {
 		if ($store->checkAuth()) {
+			$title = '未完成的訂單';
 			$orders = $store->orders()->unfinished()->orderByTime()->with('store')->get();
 			$orders = $this->withToken($orders);
+			$orders_page = null;
 
-			JavaScript::put(['__act' => 'home.order.storeOrder', 'orders' => $orders]);
+			JavaScript::put(['orders' => $orders]);
 
-			return view('home.order.storeOrder', compact('orders'));
+			return view('home.order.storeOrder', compact('orders_page', 'title'));
 		}
 	}
 
@@ -64,14 +66,15 @@ class OrderController extends Controller {
 	 */
 	public function storeOrderFinish(Store $store) {
 		if ($store->checkAuth()) {
+			$title = '完成的訂單';
 			$user = Auth::user();
 			$orders_page = $store->orders()->finished()->orderByTime()->with('store')->paginate($this->page_size);
 			$orders_page->setPath(''); // 網址可能有全形字 分頁的網址會錯誤
 			$orders = $this->withToken($orders_page);
 
-			JavaScript::put(['__act' => 'home.order.storeOrder', 'orders' => $orders]);
+			JavaScript::put(['orders' => $orders]);
 
-			return view('home.order.storeOrderFinish', compact('user', 'orders_page'));
+			return view('home.order.storeOrder', compact('orders_page', 'title'));
 		}
 	}
 
@@ -81,6 +84,7 @@ class OrderController extends Controller {
 	 * @return [type]           [description]
 	 */
 	public function update(Request $request) {
+		//dd($request->all());
 		$order = Order::findOrfail($request->input('id'));
 		$store = Store::findOrfail($request->input('store_id'));
 		$step = $request->input('step');
@@ -117,6 +121,18 @@ class OrderController extends Controller {
 			}
 		}
 		return redirect()->back();
+	}
+
+	/**
+	 * 轉址編輯商品
+	 * @param  Request $request    [description]
+	 * @param  Order   $order      [description]
+	 * @param  string  $created_at [description]
+	 * @return [type]              [description]
+	 */
+	public function editById(Request $request, Order $order, $created_at = '') {
+		//dd($order->toArray(), $order_token);
+		return redirect()->route('menu.show', [$order->store()->first()->slug, $order->id, $created_at]);
 	}
 
 	/**

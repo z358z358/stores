@@ -58,7 +58,3 @@
         {!! Form::submit($formSubmitText, ['class' => 'btn btn-primary form-control']) !!}
     </div>
 </div>
-
-@section('footer')
-    <script src="{{ url( elixir('js/google-map_my.js') ) }}" type="text/javascript"></script>
-@endsection
