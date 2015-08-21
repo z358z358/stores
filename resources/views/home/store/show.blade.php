@@ -18,11 +18,11 @@
                 <h1 class="page-header">
                     {{ $store->name }}
                     <span class="share-box">
-                        <span class="fb"><div class="fb-like" data-href="{{ route('store.showById', $store->id) }}" data-layout="button_count" data-action="like" data-show-faces="true"></div></span>                    
+                        <span class="fb"><div class="fb-like" data-href="{{ route('store.showById', $store->id) }}" data-layout="button_count" data-action="like" data-show-faces="true"></div></span>
                         <span class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-url="{{ route('store.showById', $store->id) }}"></a></span>
                         <span class="g-plus"><div class="g-plusone" data-size="medium"></div></span>
                     </span>
-                </h1>                    
+                </h1>
             </div>
         </div>
         <!-- /row -->
@@ -121,7 +121,7 @@
     <!-- Google+ JavaScript API -->
     <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'zh-TW'}</script>
     <!-- End Google+ JavaScript API -->
-    
+
     <!-- twitter -->
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
     </script>
@@ -132,6 +132,9 @@
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = 'onininon';
     var disqus_identifier = '{{ $store->id }}';
+    var disqus_config = function () {
+      this.language = "zh_TW";
+    };
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {
