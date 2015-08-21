@@ -52,10 +52,11 @@ class OrderController extends Controller {
 			$orders = $store->orders()->unfinished()->orderByTime()->with('store')->get();
 			$orders = $this->withToken($orders);
 			$orders_page = null;
+			$useFirebase = true;
 
-			JavaScript::put(['orders' => $orders]);
+			JavaScript::put(['orders' => $orders, 'store' => $store]);
 
-			return view('home.order.storeOrder', compact('orders_page', 'title'));
+			return view('home.order.storeOrder', compact('orders_page', 'title', 'useFirebase'));
 		}
 	}
 

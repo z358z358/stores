@@ -1,3 +1,10 @@
+@if (isset($useFirebase))
+  <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+  <script type="text/javascript">
+  var useFirebase = true;
+  </script>
+@endif
+
 <script type="text/javascript">
 Vue.config.debug = true // turn on debugging mode
 $.cookie.json = true;
