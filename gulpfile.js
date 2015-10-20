@@ -1,5 +1,5 @@
 var elixir = require('laravel-elixir');
-require('laravel-elixir-clean');
+//require('laravel-elixir-clean');
 //require("laravel-elixir-react");
 
 /*
@@ -18,7 +18,7 @@ elixir(function(mix) {
 
     mix
 
-    .clean()
+    //.clean()
 
     //.react("react_my.jsx")
 

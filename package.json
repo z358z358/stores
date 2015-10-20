@@ -2,10 +2,10 @@
   "name": "onininon",
   "devDependencies": {
     "gulp": "~3.8.11",
-    "laravel-elixir": "*",
-    "laravel-elixir-clean": "*",
     "gulp-util": "~3.0.4",
-    "react": "~0.13.1",
-    "laravel-elixir-react": "0.0.2"
+    "laravel-elixir": "*",
+    "laravel-elixir-clean": "^0.1.1",
+    "laravel-elixir-react": "0.0.2",
+    "react": "~0.13.1"
   }
 }

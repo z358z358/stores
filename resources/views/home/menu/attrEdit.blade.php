@@ -60,7 +60,8 @@
                 </tr>
               </tbody>
             </table>
-          <input id="attr-add-new" type="button" value="新增屬性" v-on="click: newItemAttr" />
+            <input id="attr-add-new" type="button" value="新增屬性" v-on="click: newItemAttr" />
+          </div>
         </div>
       </div>
     </div>
