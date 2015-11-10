@@ -28,25 +28,28 @@
             <th class="col-md-4 col-sm-4 col-xs-4"></th>
         </tr>
         </thead>
-        <tbody class="item-tbody" v-repeat="item :items | orderBy 'status'">
+        <tbody class="item-tbody" v-for="item in items | orderBy 'status'">
           <tr class="menu-item-tr">
             <td>
               <span v-text="item.name"></span>
               <small class="chose-count" v-if="chose[item.choseKey]" v-text="chose[item.choseKey] && chose[item.choseKey].count"></small>
               <ul>
-                <li v-repeat="attr :item.attrs">
+                <li v-for="(attr_id, attr) in item.attrs">
                   <span v-text="attr.name"></span>
-                  <label class="checkbox-inline" v-repeat="attr.option"><input type="checkbox" v-model="clicked" v-on="click: clickItemAttr(item, attr, this)"><span v-text="name"></span></label>
+                  <label class="checkbox-inline" v-for="(option_id, option) in attr.option">
+                    <input class="attr-checkbox" type="checkbox" :checked="clicked">
+                    <span v-text="option.name"></span>
+                  </label>
                 </li>
               </ul>
             </td>
             <td><span v-text="item.totalPrice | currency | removeZero"></span></td>
             <td class="btn-chose">
-              <button type="button" class="btn btn-default" v-on="click: addChoseCount(item, 3)">+3</button>
-              <button type="button" class="btn btn-default" v-on="click: addChoseCount(item, 1)">+1</button>
+              <button type="button" class="btn btn-default" @click="addChoseCount(item, 3)">+3</button>
+              <button type="button" class="btn btn-default" @click="addChoseCount(item, 1)">+1</button>
               <span v-show="chose[item.choseKey]">
-                <button type="button" class="btn btn-default" v-on="click: addChoseCount(item, -1)">-1</button>
-                <button type="button" class="btn btn-danger" v-on="click: addChoseCount(item, 0)">清除</button>
+                <button type="button" class="btn btn-default" @click="addChoseCount(item, -1)">-1</button>
+                <button type="button" class="btn btn-danger" @click="addChoseCount(item, 0)">清除</button>
               </span>
             </td>
           </tr>
@@ -66,19 +69,19 @@
             <th class="col-md-4 col-sm-4 col-xs-4"></th>
         </tr>
         </thead>
-        <tbody v-repeat="chose | orderBy 'status'">
+        <tbody v-for="item in chose | orderBy 'status'">
           <tr>
             <td>
-              <span v-text="name"></span>
+              <span v-text="item.name"></span>
             </td>
-            <td v-text="price | currency | removeZero"></td>
-            <td v-text="count"></td>
+            <td v-text="item.price | currency | removeZero"></td>
+            <td v-text="item.count"></td>
             <td class="btn-chose">
-              <button type="button" class="btn btn-default" v-on="click: addChoseCount($key, 3)">+3</button>
-              <button type="button" class="btn btn-default" v-on="click: addChoseCount($key, 1)">+1</button>
+              <button type="button" class="btn btn-default" @click="addChoseCount($key, 3)">+3</button>
+              <button type="button" class="btn btn-default" @click="addChoseCount($key, 1)">+1</button>
               <span>
-                <button type="button" class="btn btn-default" v-on="click: addChoseCount($key, -1)">-1</button>
-                <button type="button" class="btn btn-danger" v-on="click: addChoseCount($key, 0)">清除</button>
+                <button type="button" class="btn btn-default" @click="addChoseCount($key, -1)">-1</button>
+                <button type="button" class="btn btn-danger" @click="addChoseCount($key, 0)">清除</button>
               </span>
             </td>
           </tr>

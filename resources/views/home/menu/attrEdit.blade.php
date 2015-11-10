@@ -21,26 +21,27 @@
                   <th></th>
               </tr>
               </thead>
-              <tbody class="attr-tbody" v-repeat="itemAttr: itemAttrs" track-by="id">
+              <tbody class="attr-tbody" v-for="itemAttr in itemAttrs" track-by="id">
                 <tr v-show="! itemAttr.edit">
                   <td class="attr-td-name col-md-3" v-text="itemAttr.name"></td>
                   <td class="col-md-9">
-                    <input class="btn btn-default" type="button" value="修改" v-on="click: itemAttr.edit = true" />
-                    <input class="btn btn-danger" type="button" value="刪除" v-on="click: removeItemAttr(itemAttr)" />
+                    <input class="btn btn-default" type="button" value="修改" @click="itemAttr.edit = true" />
+                    <input class="btn btn-danger" type="button" value="刪除" @click="removeItemAttr(itemAttr)" />
                   </td>
                 </tr>
                 <tr v-show="itemAttr.edit">
                   <td class="col-md-3"><input type="text" name="attr[@{{ itemAttr.id }}][name]" placeholder="名稱" v-model="itemAttr.name" /></td>
                   <td class="col-md-9">
                     <p v-if="itemAttr.option.length">選項</p>
-                    <div class="form-group row div-option" v-repeat="itemAttr.option">
+                    <div class="form-group row div-option" v-for="option in itemAttr.option">
                       <div class="col-sm-3">
-                      <input type="hidden" class="form-control" name="attr[@{{ itemAttr.id }}][option][id][]" v-model="id">
-                      <input type="text" class="form-control" name="attr[@{{ itemAttr.id }}][option][name][]" placeholder="名稱" v-model="name">
+                      <input type="hidden" class="form-control" name="attr[@{{ itemAttr.id }}][option][id][]" v-model="option.id">
+                      <input type="text" class="form-control" name="attr[@{{ itemAttr.id }}][option][name][]" placeholder="名稱" v-model="option.name">
                       </div>
-                      <div class="col-sm-2"><input type="number" class="form-control" name="attr[@{{ itemAttr.id }}][option][price][]" placeholder="單價變動" v-model="price"></div>
-                      <div class="col-xs-2"><input class="btn btn-danger" type="button" value="刪除" v-on="click: removeItemAttrOption(itemAttr, $index)"></div>
+                      <div class="col-sm-2"><input type="number" class="form-control" name="attr[@{{ itemAttr.id }}][option][price][]" placeholder="單價變動" v-model="option.price"></div>
+                      <div class="col-xs-2"><input class="btn btn-danger" type="button" value="刪除" @click="removeItemAttrOption(itemAttr, option)"></div>
                     </div>
+                    <button class="btn btn-default" type="button" @click="newOption(itemAttr)">新增選項</button>
                     <div class="form-group">
                       <label class="col-sm-2">最多可以選幾個</label>
                       <div class="col-sm-10">
@@ -54,13 +55,12 @@
                       </div>
                     </div>
                     <input type="hidden" name="attr[@{{ itemAttr.id }}][attr_id]" v-model="itemAttr.id" />
-                    <input class="btn btn-default" type="button" value="確定" v-on="click: editDone(itemAttr)" />
-                    <button class="btn btn-default" type="button" v-on="click: newOption(itemAttr)">新增選項</button>
+                    <input class="btn btn-default" type="button" value="確定" @click="editDone(itemAttr)" />
                   </td>
                 </tr>
               </tbody>
             </table>
-            <input id="attr-add-new" type="button" value="新增屬性" v-on="click: newItemAttr" />
+            <input id="attr-add-new" type="button" value="新增屬性" @click="newItemAttr" />
           </div>
         </div>
       </div>

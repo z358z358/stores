@@ -15,9 +15,10 @@ var maxId = 0;
 var demarcation = demarcation || '|';
 var order_cookie_name = order_cookie_name || '';
 var chose = chose || $.cookie(order_cookie_name);
-chose = (Object.prototype.toString.call(chose) === '[object Object]') ? chose : {};
 var orders = orders || [];
-var old_cookie_name = old_cookie_name || '';
+var old_cookie_name = 'old_chose';
+chose = chose || $.cookie(old_cookie_name);
+chose = (Object.prototype.toString.call(chose) === '[object Object]') ? chose : {};
 // 完成頁 刪掉舊cookie
 if(order_cookie_name && orders.length) $.removeCookie(order_cookie_name, { path: '/' });
 
@@ -55,7 +56,7 @@ orders.forEach( function (order) {
   order.showDetail = false;
 });
 
-new Vue({
+var vue = new Vue({
   el: '#item',
 
   data: {
@@ -115,6 +116,17 @@ new Vue({
     },
   },
 
+  // 為了讓v-repeat v-model v-on一起用
+  components:{
+    options:{
+      watch:{
+        'clicked':function(v){
+          alert(v);
+        }
+      }
+    }
+  },
+
   ready: function () {
     $( ".sortable" ).sortable();
     $( ".sortable" ).disableSelection();
@@ -122,6 +134,9 @@ new Vue({
 
     var choseTab = $("#myTab #chose-tab");
     if(!$.isEmptyObject(this.chose) && choseTab) choseTab.trigger( "click" );
+    $(".menu-item-tr").on('click','.attr-checkbox',function(){
+      vue.clickItemAttr($(this).attr('item-id') , $(this).attr('attr-id') , $(this).attr('option-id'));
+    });
   },
 
   methods: {
@@ -164,7 +179,7 @@ new Vue({
 
     // 刪除商品
     removeItem: function (item) {
-      this.items.$remove(item.$data);
+      this.items.$remove(item);
     },
 
     // 刪除屬性
@@ -173,16 +188,20 @@ new Vue({
     },
 
     // 刪除屬性選項
-    removeItemAttrOption: function (itemAttr, index) {
-      itemAttr.option.$remove(index);
+    removeItemAttrOption: function (itemAttr, option) {
+      itemAttr.option.$remove(option);
     },
 
     // 建立訂單 點屬性checkbox
-    clickItemAttr: function (item, itemAttr, option) {
+    clickItemAttr: function (itemId, attrId, optionId) {
+      var items = $.grep(this.items, function(e){ return e.id == itemId; });
+      var item = items[0];
+      var itemAttr = item["attrs"][attrId];
+      var option = itemAttr["option"][optionId];
       var options = item.options || {};
       var optionClicked = $.grep(itemAttr.option, function(e){ return e.clicked; });
       itemAttr.clickCount = optionClicked.length;
-
+      console.log(optionClicked);
       // 勾超過max
       if(itemAttr.max > 0 && itemAttr.clickCount > itemAttr.max){
         option.clicked = false;
@@ -199,7 +218,7 @@ new Vue({
         options[itemAttr.id].push(option.id);
       });
       options[itemAttr.id].sort();
-      item.$set('options', options);
+      //item.set options(options);
 
       // 更新chosekey fullName
       var choseKey = item.id;
@@ -213,10 +232,9 @@ new Vue({
           fullName = fullName + "," + tmpOption[0]['name'];
         }
       }
-      item.$set('choseKey', choseKey);
-      item.$set('fullName', fullName);
-
-
+      //console.log(choseKey ,fullName );
+      //item.choseKey=choseKey;
+      //Vue.set( item, 'fullName', fullName );
     },
 
     // 增加-減少
@@ -239,22 +257,22 @@ new Vue({
       }
 
       if(isNaN(chose["count"]) || chose["count"] <= 0){
-        this.chose.$delete(choseKey);
+        Vue.delete( this.chose, choseKey);
       }
       else{
-        this.chose.$set(choseKey, chose);
+        Vue.set( this.chose, choseKey, chose );
       }
 
       // 若都沒選了 就回到menu
       if($.isEmptyObject(this.chose)){
         $("#myTab #menu-tab").trigger( "click" );
       }
-      $.cookie(cookie_name, this.chose, { path: '/' });
+      $.cookie(old_cookie_name, this.chose, { path: '/' });
     },
 
     // 刪掉有問題的chose
     checkChose: function () {
-      if(typeof errorChoseKey == "string") this.chose.$delete(errorChoseKey);
+      if(typeof errorChoseKey == "string") Vue.delete( this.chose, errorChoseKey);
     }
 
   }

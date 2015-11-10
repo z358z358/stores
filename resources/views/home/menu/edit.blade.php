@@ -22,28 +22,28 @@
                   <th class="col-md-3"></th>
               </tr>
               </thead>
-              <tbody v-repeat="onShelf | orderBy 'status'" track-by="id" class="item-tbody ui-state-default">
-                <tr v-show="! edit">
-                  <td v-text="name"></td>
-                  <td v-text="price | currency"></td>
+              <tbody v-for="item in onShelf | orderBy 'status'" track-by="id" class="item-tbody ui-state-default">
+                <tr v-show="! item.edit">
+                  <td v-text="item.name"></td>
+                  <td v-text="item.price | currency"></td>
                   <td>
-                    <button v-on="click: edit = true" class="btn btn-default" type="button">修改</button>
-                    <button v-on="click: status = -1" class="btn btn-default" type="button">下架</button>
+                    <button @click="item.edit = true" class="btn btn-default" type="button">修改</button>
+                    <button @click="item.status = -1" class="btn btn-default" type="button">下架</button>
                   </td>
                 </tr>
 
-                <tr v-show="edit">
-                  <td><input type="text" name="items[@{{ id }}][name]" placeholder="名稱" v-model="name"/></td>
-                  <td><input type="number" name="items[@{{ id }}][price]"  placeholder="單價" v-model="price" number /></td>
+                <tr v-show="item.edit">
+                  <td><input type="text" name="items[@{{ item.id }}][name]" placeholder="名稱" v-model="item.name"/></td>
+                  <td><input type="number" name="items[@{{ item.id }}][price]"  placeholder="單價" v-model="item.price" number /></td>
                   <td>
-                    <input type="hidden" name="items[@{{ id }}][id]" v-model="id" />
-                    <input type="hidden" name="items[@{{ id }}][status]" v-model="status" />
-                    <button v-on="click: editDone(this)" class="btn btn-default" type="button" >確定</button>
+                    <input type="hidden" name="items[@{{ item.id }}][id]" v-model="item.id" />
+                    <input type="hidden" name="items[@{{ item.id }}][status]" v-model="item.status" />
+                    <button @click="editDone(item)" class="btn btn-default" type="button" >確定</button>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <button v-on="click: newItem" type="button">新增商品</button>
+            <button @click="newItem" type="button">新增商品</button>
           </div>
         </div>
       </div>
@@ -62,17 +62,17 @@
                   <th></th>
                 </tr>
               </thead>
-             <tbody v-repeat="offShelf | orderBy 'status' true" track-by="id" class="item-tbody ui-state-default">
+             <tbody v-for="item in offShelf | orderBy 'status' true" track-by="id" class="item-tbody ui-state-default">
                 <tr>
-                  <td v-text="name"></td>
-                  <td v-text="price | currency"></td>
+                  <td v-text="item.name"></td>
+                  <td v-text="item.price | currency"></td>
                   <td>
-                    <input type="hidden" name="items[@{{ id }}][id]" v-model="id" />
-                    <input type="hidden" name="items[@{{ id }}][status]" v-model="status" />
-                    <input type="hidden" name="items[@{{ id }}][name]" v-model="name" />
-                    <input type="hidden" name="items[@{{ id }}][price]" v-model="price" />
-                    <button v-on="click: status = 1" class="btn btn-default" type="button">上架</button>
-                    <button v-on="click: removeItem(this)" class="btn btn-default btn-danger" type="button">刪除</button>
+                    <input type="hidden" name="items[@{{ item.id }}][id]" v-model="item.id" />
+                    <input type="hidden" name="items[@{{ item.id }}][status]" v-model="item.status" />
+                    <input type="hidden" name="items[@{{ item.id }}][name]" v-model="item.name" />
+                    <input type="hidden" name="items[@{{ item.id }}][price]" v-model="item.price" />
+                    <button @click="item.status = 1" class="btn btn-default" type="button">上架</button>
+                    <button @click="removeItem(item)" class="btn btn-default btn-danger" type="button">刪除</button>
                   </td>
                 </tr>
               </tbody>
