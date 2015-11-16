@@ -5,6 +5,7 @@
   var __act = ("string" == typeof __act) ? __act : "";
 	$(function() {
 		$('#flash-overlay-modal').modal();
+    jQuery.timeago.settings.localeTitle = true;
 		$(".timeago").timeago();
 	});
 </script>

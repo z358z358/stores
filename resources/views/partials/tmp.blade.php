@@ -9,6 +9,7 @@
 Vue.config.debug = true // turn on debugging mode
 $.cookie.json = true;
 
+var fire;
 var items = items || [];
 var itemAttrs = itemAttrs || [];
 var maxId = 0;
@@ -16,8 +17,6 @@ var demarcation = demarcation || '|';
 var order_cookie_name = order_cookie_name || '';
 var chose = chose || $.cookie(order_cookie_name);
 var orders = orders || [];
-var old_cookie_name = 'old_chose';
-chose = chose || $.cookie(old_cookie_name);
 chose = (Object.prototype.toString.call(chose) === '[object Object]') ? chose : {};
 // 完成頁 刪掉舊cookie
 if(order_cookie_name && orders.length) $.removeCookie(order_cookie_name, { path: '/' });
@@ -134,9 +133,6 @@ var vue = new Vue({
 
     var choseTab = $("#myTab #chose-tab");
     if(!$.isEmptyObject(this.chose) && choseTab) choseTab.trigger( "click" );
-    $(".menu-item-tr").on('click','.attr-checkbox',function(){
-      vue.clickItemAttr($(this).attr('item-id') , $(this).attr('attr-id') , $(this).attr('option-id'));
-    });
   },
 
   methods: {
@@ -193,15 +189,12 @@ var vue = new Vue({
     },
 
     // 建立訂單 點屬性checkbox
-    clickItemAttr: function (itemId, attrId, optionId) {
-      var items = $.grep(this.items, function(e){ return e.id == itemId; });
-      var item = items[0];
-      var itemAttr = item["attrs"][attrId];
-      var option = itemAttr["option"][optionId];
+    clickItemAttr: function (item, itemAttr, option) {
+      option.clicked = !option.clicked;
       var options = item.options || {};
       var optionClicked = $.grep(itemAttr.option, function(e){ return e.clicked; });
       itemAttr.clickCount = optionClicked.length;
-      console.log(optionClicked);
+
       // 勾超過max
       if(itemAttr.max > 0 && itemAttr.clickCount > itemAttr.max){
         option.clicked = false;
@@ -218,7 +211,7 @@ var vue = new Vue({
         options[itemAttr.id].push(option.id);
       });
       options[itemAttr.id].sort();
-      //item.set options(options);
+      Vue.set( item, 'options', options );
 
       // 更新chosekey fullName
       var choseKey = item.id;
@@ -234,7 +227,8 @@ var vue = new Vue({
       }
       //console.log(choseKey ,fullName );
       //item.choseKey=choseKey;
-      //Vue.set( item, 'fullName', fullName );
+      Vue.set( item, 'choseKey', choseKey );
+      Vue.set( item, 'fullName', fullName );
     },
 
     // 增加-減少
@@ -267,14 +261,32 @@ var vue = new Vue({
       if($.isEmptyObject(this.chose)){
         $("#myTab #menu-tab").trigger( "click" );
       }
-      $.cookie(old_cookie_name, this.chose, { path: '/' });
+      $.cookie(order_cookie_name, this.chose, { path: '/' });
     },
 
     // 刪掉有問題的chose
     checkChose: function () {
       if(typeof errorChoseKey == "string") Vue.delete( this.chose, errorChoseKey);
+    },
+
+    // Firebase啟動
+    fireOn: function(){
+      fire.child('order/' + store.id).on("value", function(snapshot) {
+        console.log(snapshot);
+      });
     }
 
   }
 });
+
+if(typeof useFirebase != 'undefined'){
+  var script = document.createElement('script');
+  script.onload = function() {
+    fire = new Firebase('https://onininon-store.firebaseio.com/');
+    vue.fireOn();
+  };
+  script.async=true;
+  script.src = "https://cdn.firebase.com/js/client/2.3.1/firebase.js";
+  document.getElementsByTagName('head')[0].appendChild(script);
+}
 </script>

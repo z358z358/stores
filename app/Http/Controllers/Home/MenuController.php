@@ -235,6 +235,7 @@ class MenuController extends Controller {
 
 		$order->save();
 		flash()->success('點菜成功');
+		$store->fireBaseSync();
 
 		$parameters = ['id' => $order->id, 'created_at' => $order->created_at->toDateTimeString()];
 		//dd($order->created_at);

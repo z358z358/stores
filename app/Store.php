@@ -1,7 +1,7 @@
 <?php namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model {
 
@@ -13,8 +13,7 @@ class Store extends Model {
 	 * @param  [type] $slug  [description]
 	 * @return [type]        [description]
 	 */
-	public function scopeFindBySlug($query, $slug)
-	{
+	public function scopeFindBySlug($query, $slug) {
 		return $query->whereSlug($slug)->firstOrFail();
 	}
 
@@ -22,8 +21,7 @@ class Store extends Model {
 	 * slug存到資料庫的時候 轉成slug
 	 * @param [type] $data [description]
 	 */
-	public function setSlugAttribute($data)
-	{
+	public function setSlugAttribute($data) {
 		$this->attributes['slug'] = str_slug_utf8($data);
 	}
 
@@ -31,8 +29,7 @@ class Store extends Model {
 	 * select2使用
 	 * @return [type] [description]
 	 */
-	public function getTagListAttribute()
-	{
+	public function getTagListAttribute() {
 		return $this->tags->lists('id');
 	}
 
@@ -40,20 +37,18 @@ class Store extends Model {
 	 * 把介紹的文字加入連結
 	 * @return [type] [description]
 	 */
-	public function getInfoHtmlAttribute()
-	{
+	public function getInfoHtmlAttribute() {
 		return nl2br(preg_replace(
-              "~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~",
-              "<a target=\"_blank\" href=\"\\0\">\\0</a>",
-              $this->attributes['info']));
+			"~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~",
+			"<a target=\"_blank\" href=\"\\0\">\\0</a>",
+			$this->attributes['info']));
 	}
 
 	/**
 	 * meta description用
 	 * @return [type] [description]
 	 */
-	public function getInfoDescAttribute()
-	{
+	public function getInfoDescAttribute() {
 		return str_limit($this->attributes['info'], 100, '...');
 	}
 
@@ -61,8 +56,7 @@ class Store extends Model {
 	 * 有沒有設定item
 	 * @return [type] [description]
 	 */
-	public function getHasItemAttribute()
-	{
+	public function getHasItemAttribute() {
 		return !is_null($this->items->first());
 	}
 
@@ -70,8 +64,7 @@ class Store extends Model {
 	 * 檢查是不是建立者
 	 * @return [type] [description]
 	 */
-	public function getOwnerAttribute()
-	{
+	public function getOwnerAttribute() {
 		return (Auth::user() && $this->attributes['user_id'] == Auth::user()->id);
 	}
 
@@ -79,8 +72,7 @@ class Store extends Model {
 	 * 回傳cookie name
 	 * @return [type] [description]
 	 */
-	public function getOrderCookieNameAttribute()
-	{
+	public function getOrderCookieNameAttribute() {
 		return 'order' . $this->id;
 	}
 
@@ -88,23 +80,29 @@ class Store extends Model {
 	 * 檢查商店權限
 	 * @return [type] [description]
 	 */
-	public function checkAuth()
-	{
+	public function checkAuth() {
 		$result = false;
 		// 商店建立者
-		if( $this->owner )
-		{
+		if ($this->owner) {
 			$result = true;
-		}	
+		}
 		return $result;
+	}
+
+	/**
+	 * fb同步
+	 * @return [type] [description]
+	 */
+	public function fireBaseSync() {
+		$firebase = new \Firebase\FirebaseLib(env('FIREBASE_URL'), env('FIREBASE_SECRETS'));
+		return $firebase->set('order/' . $this->id, '789');
 	}
 
 	/**
 	 * 對應到該使用者
 	 * @return [type] [description]
 	 */
-	public function user()
-	{
+	public function user() {
 		return $this->belongsTo('App\User');
 	}
 
@@ -112,8 +110,7 @@ class Store extends Model {
 	 * 對應的Tag
 	 * @return [type] [description]
 	 */
-	public function tags()
-	{
+	public function tags() {
 		return $this->belongsToMany('App\Tag');
 	}
 
@@ -121,8 +118,7 @@ class Store extends Model {
 	 * 對應的Item
 	 * @return [type] [description]
 	 */
-	public function items()
-	{
+	public function items() {
 		return $this->hasMany('App\Item');
 	}
 
@@ -130,8 +126,7 @@ class Store extends Model {
 	 * 對應的Order
 	 * @return [type] [description]
 	 */
-	public function orders()
-	{
+	public function orders() {
 		return $this->hasMany('App\Order');
 	}
 
@@ -139,8 +134,7 @@ class Store extends Model {
 	 * 對應的Item
 	 * @return [type] [description]
 	 */
-	public function itemAttrs()
-	{
+	public function itemAttrs() {
 		return $this->hasMany('App\ItemAttr');
 	}
 }

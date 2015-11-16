@@ -12,7 +12,8 @@
 		"guzzlehttp/guzzle": "~5.2",
 		"chencha/share": "~5.0",
 		"predis/predis": "~1.0",
-		"laracasts/utilities": "~2.0"
+		"laracasts/utilities": "~2.0",
+		"ktamas77/firebase-php": "dev-master"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

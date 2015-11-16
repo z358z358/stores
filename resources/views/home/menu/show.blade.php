@@ -34,10 +34,10 @@
               <span v-text="item.name"></span>
               <small class="chose-count" v-if="chose[item.choseKey]" v-text="chose[item.choseKey] && chose[item.choseKey].count"></small>
               <ul>
-                <li v-for="(attr_id, attr) in item.attrs">
+                <li v-for="attr in item.attrs">
                   <span v-text="attr.name"></span>
-                  <label class="checkbox-inline" v-for="(option_id, option) in attr.option">
-                    <input class="attr-checkbox" type="checkbox" :checked="clicked">
+                  <label class="checkbox-inline" v-for="option in attr.option" @click="clickItemAttr(item,attr,option)">
+                    <i class="fa fa-check-square-o" :class="{'fa-square-o':!option.clicked}"></i>
                     <span v-text="option.name"></span>
                   </label>
                 </li>

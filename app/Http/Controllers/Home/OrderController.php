@@ -26,11 +26,9 @@ class OrderController extends Controller {
 		if (Auth::check()) {
 			$user = Auth::user();
 			$orders = $user->orders()->unfinished()->orderByTime()->with('store')->get();
-			$orders = $this->withToken($orders);
 		} else if ($request->input('id') && $request->input('created_at')) {
 			$where = array_only($request->all(), ['id', 'created_at']);
 			$orders = Order::idAndCreated($where)->with('store')->get();
-			$orders = $this->withToken($orders);
 			//dd($orders);
 		}
 		$order_cookie_name = session('order_cookie_name');
@@ -50,7 +48,7 @@ class OrderController extends Controller {
 		if ($store->checkAuth()) {
 			$title = '未完成的訂單';
 			$orders = $store->orders()->unfinished()->orderByTime()->with('store')->get();
-			$orders = $this->withToken($orders);
+
 			$orders_page = null;
 			$useFirebase = true;
 
@@ -71,7 +69,6 @@ class OrderController extends Controller {
 			$user = Auth::user();
 			$orders_page = $store->orders()->finished()->orderByTime()->with('store')->paginate($this->page_size);
 			$orders_page->setPath(''); // 網址可能有全形字 分頁的網址會錯誤
-			$orders = $this->withToken($orders_page);
 
 			JavaScript::put(['orders' => $orders]);
 
@@ -134,21 +131,5 @@ class OrderController extends Controller {
 	public function editById(Request $request, Order $order, $created_at = '') {
 		//dd($order->toArray(), $order_token);
 		return redirect()->route('menu.show', [$order->store()->first()->slug, $order->id, $created_at]);
-	}
-
-	/**
-	 * 將model的token變成變數
-	 * @param  [type] $orders [description]
-	 * @return [type]         [description]
-	 */
-	public function withToken($orders) {
-		$result = [];
-		foreach ($orders as $order) {
-			$order->order_token = $order->token;
-			$order->status_name = $order->step_status_num[$order->status]['name'];
-			$order->content = $order->content_array;
-			$result[] = $order;
-		}
-		return $result;
 	}
 }
