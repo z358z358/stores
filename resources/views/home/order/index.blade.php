@@ -39,7 +39,7 @@
             <button class="btn btn-default" type="button" @click="order.showDetail = !order.showDetail">詳細</button>
             <a class="btn btn-default" href="{{ route('order.editById',"") }}/@{{ order.id }}/@{{ order.created_at}}">修改</a>
             {!! Form::hidden('id', '@{{ order.id }}') !!}
-            {!! Form::hidden('order_token', '@{{ order.order_token }}') !!}
+            {!! Form::hidden('token', '@{{ order.token }}') !!}
             {!! Form::submit('刪除', ['class' => 'btn btn-danger']) !!}
             {!! Form::close() !!}
           </td>

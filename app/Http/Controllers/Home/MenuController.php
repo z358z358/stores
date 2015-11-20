@@ -105,12 +105,13 @@ class MenuController extends Controller {
 	public function update(Store $store, Request $request) {
 		//dd($request->all());
 		$items = [];
-		$count = 2;
 
-		if ($request->input('items')) {
-			foreach ($request->input('items') as $data) {
-				$inc = ($data['status'] >= 0) ? 1 : -1;
-				$data['status'] = $count * $inc;
+		if ($request->has('items_json')) {
+			$items = json_decode($request->input('items_json'), true);
+			$count = 2;
+			$max = count($items) + $count;
+			foreach ($items as $data) {
+				$data['status'] = ($data['status'] >= 0) ? $max - $count : -$count;
 				$item = $store->items()->findOrNew($data['id']);
 				$item->fill($data);
 				$item->save();

@@ -95,7 +95,8 @@ class Store extends Model {
 	 */
 	public function fireBaseSync() {
 		$firebase = new \Firebase\FirebaseLib(env('FIREBASE_URL'), env('FIREBASE_SECRETS'));
-		return $firebase->set('order/' . $this->id, '789');
+		$orders = $this->orders()->unfinished()->orderByTime()->with('store')->get();
+		return $firebase->set('order/' . $this->id, $orders);
 	}
 
 	/**

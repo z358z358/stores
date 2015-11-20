@@ -43,7 +43,7 @@ elixir(function(mix) {
         'libs/jquery.tmpl.js',
         'libs/jquery.cookie.js',
         //'libs/vue.0.12.js',
-        'libs/vue.1.04.js',
+        'libs/vue.1.08.js',
 
         'google-map_my.js',
         'select2_my.js',

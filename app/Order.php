@@ -13,7 +13,7 @@ class Order extends Model {
 		'done' => ['key' => 100, 'name' => '訂單完成'],
 	];
 
-	protected $appends = ['token', 'content_array', 'status_name'];
+	protected $appends = ['token', 'content_array', 'status_name', 'show_detail'];
 	public $step_status_num = []; // __construct
 
 	public function __construct($attributes = array()) {
@@ -62,9 +62,14 @@ class Order extends Model {
 		return bcrypt($this->created_at);
 	}
 
-	// order的token
+	// order的status name
 	public function getStatusNameAttribute() {
 		return $this->step_status_num[$this->status]['name'];
+	}
+
+	// order的status name
+	public function getShowDetailAttribute() {
+		return false;
 	}
 
 	// status_name

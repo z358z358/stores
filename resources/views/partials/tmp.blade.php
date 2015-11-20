@@ -6,6 +6,62 @@
 @endif
 
 <script type="text/javascript">
+Vue.component('item-table', {
+  template: '#item-table-template',
+  props: ['items', 'onOffType'],
+
+  data:function(){},
+
+  computed:{
+    _items:function(){
+      var that = this;
+      var tmp = this.items.filter(function(item){
+        return that.onOffType == 'on' && item.status >= 0 || that.onOffType == 'off' && item.status < 0;
+      })
+      return tmp.sort( function(a,b){return that.isOn ? (a.status-b.status) :b.status-a.status } );
+    },
+
+    isOn:function(){
+      return this.onOffType == 'on';
+    }
+  },
+
+  methods:{
+    // 新增商品
+    newItem: function () {
+      this.items.push({
+        id:null,
+        name: '',
+        price: 0,
+        edit: true,
+        status: 1
+      });
+    },
+
+    // 刪除商品
+    removeItem: function (item) {
+      this.items.$remove(item);
+    },
+
+    // 上移
+    move:function(_items , index , type){
+      var item = _items[index];
+      var item2 = _items[index + type];
+      //console.log(_items, index , item2.name);
+      if(item2.status){
+        if(item.status == item2.status){
+          item.status += type;
+        }
+        else{
+          var tmp = item2.status;
+          item2.status = item.status;
+          item.status = tmp;
+        }
+      }
+    },
+  },
+});
+
 Vue.config.debug = true // turn on debugging mode
 $.cookie.json = true;
 
@@ -65,16 +121,7 @@ var vue = new Vue({
     itemAttrs: itemAttrs,
     maxId: maxId,
     demarcation: demarcation,
-
-    filters: {
-      onShelf: function (item) {
-        return item.status >= 0;
-      },
-
-      offShelf: function (item) {
-        return item.status < 0;
-      },
-    }
+    msg: [],
   },
 
   filters: {
@@ -84,14 +131,6 @@ var vue = new Vue({
   },
 
   computed: {
-      onShelf: function() {
-          return this.items.filter(this.filters.onShelf);
-      },
-
-      offShelf: function() {
-          return this.items.filter(this.filters.offShelf);
-      },
-
       info: function() {
         var info = {"price": 0, "count": 0, "kind": 0};
         var chose = this.chose;
@@ -113,17 +152,11 @@ var vue = new Vue({
         width: '100%'
       });
     },
-  },
 
-  // 為了讓v-repeat v-model v-on一起用
-  components:{
-    options:{
-      watch:{
-        'clicked':function(v){
-          alert(v);
-        }
-      }
-    }
+    // 更新timeago
+    'orders': function (val, oldVal) {
+      $(".timeago").timeago();
+    },
   },
 
   ready: function () {
@@ -136,18 +169,6 @@ var vue = new Vue({
   },
 
   methods: {
-    // 新增商品
-    newItem: function () {
-      this.maxId++;
-      this.items.push({
-        id:this.maxId,
-        name: '',
-        price: 0,
-        edit: true,
-        status: 1
-      });
-    },
-
     // 新增屬性
     newItemAttr: function () {
       this.maxId++;
@@ -166,16 +187,6 @@ var vue = new Vue({
       itemAttr.option.push({
         name: ''
       });
-    },
-
-    // 完成編輯
-    editDone: function (item) {
-      item.edit = false;
-    },
-
-    // 刪除商品
-    removeItem: function (item) {
-      this.items.$remove(item);
     },
 
     // 刪除屬性
@@ -272,8 +283,20 @@ var vue = new Vue({
     // Firebase啟動
     fireOn: function(){
       fire.child('order/' + store.id).on("value", function(snapshot) {
-        console.log(snapshot);
+        var tmp = snapshot.val();
+        if(tmp){
+          vue.$set('orders', tmp);
+        }
+        else{
+          vue.$set('orders', 'none');
+        }
       });
+    },
+
+    ajax_result: function(data){
+      if(data['msg']){
+         vue.$set('msg', data['msg']);
+      }
     }
 
   }

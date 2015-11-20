@@ -47,12 +47,12 @@ class OrderController extends Controller {
 	public function storeOrder(Store $store) {
 		if ($store->checkAuth()) {
 			$title = '未完成的訂單';
-			$orders = $store->orders()->unfinished()->orderByTime()->with('store')->get();
+			//$orders = $store->orders()->unfinished()->orderByTime()->with('store')->get();
 
 			$orders_page = null;
 			$useFirebase = true;
 
-			JavaScript::put(['orders' => $orders, 'store' => $store]);
+			JavaScript::put(['store' => $store]);
 
 			return view('home.order.storeOrder', compact('orders_page', 'title', 'useFirebase'));
 		}
@@ -90,10 +90,15 @@ class OrderController extends Controller {
 		// 檢查權限
 		if ($store->checkAuth()) {
 			// 檢查token
-			if ($order->checkToken($request->input('order_token')) && isset($order->step_status[$step])) {
+			if ($order->checkToken($request->input('token')) && isset($order->step_status[$step])) {
 				$order->status = $order->step_status[$step]['key'];
 				$order->save();
-				flash()->success('更新訂單編號' . $order->id . ' 成功');
+				$store->fireBaseSync();
+				if ($request->ajax()) {
+					return ['msg' => [['type' => 'success', 'content' => '更新訂單編號' . $order->id . ' 成功']]];
+				} else {
+					flash()->success('更新訂單編號' . $order->id . ' 成功');
+				}
 			}
 		}
 		return redirect()->back();
@@ -111,11 +116,12 @@ class OrderController extends Controller {
 		// 檢查本人 或是店家
 		if ((null === $order->user_id) || (Auth::check() && Auth::user()->id == $order->user_id) || ($store->checkAuth())) {
 			// 檢查token
-			if ($order->checkToken($request->input('order_token'))) {
+			if ($order->checkToken($request->input('token'))) {
 				//$order->status = $order->step_status['del']['key'];
 				//$order->save();
 				$order->delete();
 				flash()->success('刪除訂單編號' . $order->id . ' 成功');
+				$store->fireBaseSync();
 			}
 		}
 		return redirect()->back();

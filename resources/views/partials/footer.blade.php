@@ -7,6 +7,14 @@
 		$('#flash-overlay-modal').modal();
     jQuery.timeago.settings.localeTitle = true;
 		$(".timeago").timeago();
+    $(".bind-form").on("submit", ".form-ajax", function(e){
+      e.preventDefault();
+      var form = $(this);
+      $.post(form.attr("action"), form.serialize(), function(data){
+        vue.ajax_result(data);
+      }, "json");
+      return false;
+    });
 	});
 </script>
 
