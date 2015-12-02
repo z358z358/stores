@@ -14,43 +14,7 @@
   <div class="row">
     <item-table :items="items" on-off-type="off"></item-table>
   </div>
-  <!--<pre>@{{ items | json}}</pre>-->
   {!! Form::hidden('items_json', '@{{ items | orderBy \'status\' -1 | json}}') !!}
-<!--
-    <div class="col-md-12">
-      <div v-show="offShelf.length" class="panel panel-default">
-        <div class="panel-heading">已下架的商品</div>
-        <div class="panel-body">
-          <div class="dataTable_wrapper">
-            <item-table :items="offShelf" onOff="off"></item-table>
-            <table id="item-table-remove" class="item-table form-table sortable table table-striped table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th>名稱</th>
-                  <th>單價</th>
-                  <th></th>
-                </tr>
-              </thead>
-             <tbody v-for="item in offShelf | orderBy 'status' true" track-by="id" class="item-tbody ui-state-default">
-                <tr>
-                  <td v-text="item.name"></td>
-                  <td v-text="item.price | currency"></td>
-                  <td>
-                    <input type="hidden" name="items[@{{ item.id }}][id]" v-model="item.id" />
-                    <input type="hidden" name="items[@{{ item.id }}][status]" v-model="item.status" />
-                    <input type="hidden" name="items[@{{ item.id }}][name]" v-model="item.name" />
-                    <input type="hidden" name="items[@{{ item.id }}][price]" v-model="item.price" />
-                    <button @click="item.status = 1" class="btn btn-default" type="button">上架</button>
-                    <button @click="removeItem(item)" class="btn btn-default btn-danger" type="button">刪除</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>-->
   {!! Form::submit('送出', ['class' => 'btn btn-primary form-control']) !!}
   {!! Form::close() !!}
 </div>
@@ -74,7 +38,6 @@
                 <td v-text="item.name"></td>
                 <td v-text="item.price | currency"></td>
                 <td>
-                @{{item.status}}
                   <button @click="move(_items , index , -1)" :class="{disabled:index == 0}" class="btn btn-default" type="button">↑</button>
                   <button @click="move(_items , index , 1)"  :class="{disabled:index == _items.length - 1}" class="btn btn-default" type="button">↓</button>
                   <span v-if="isOn">

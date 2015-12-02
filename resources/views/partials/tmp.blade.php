@@ -5,6 +5,39 @@
   </script>
 @endif
 
+todo:解jquery rebind bug
+http://forum.vuejs.org/topic/718/how-to-rebind-jquery-when-array-push/2
+you can use directive
+<div id="item">
+    <div v-for="item in items">
+    <select class="form-control bootstrap-multiselect" v-select="item.options" multiple="multiple" name="test" >
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+    </select>
+    </div>
+    <button @click="newItem">new item</button>
+    <pre>{{ $data | json}}</pre>
+</div>
+
+Vue.directive('select',{
+    twoWay: true,
+    bind:function(){
+        var self=this;
+        $(this.el).change(function () {
+            console.log($(this).val());
+            self.set($(this).val());
+        }).multiselect();
+    },
+    update:function(newVal,oldVal){
+        $(this.el).val(newVal).trigger('change');
+    },
+    unbind:function(){
+        $(this.el).multiselect('destroy');
+    }
+});
+
 <script type="text/javascript">
 Vue.component('item-table', {
   template: '#item-table-template',
@@ -146,11 +179,12 @@ var vue = new Vue({
 
   watch: {
     // 更新select2
-    'itemAttrs': function (val, oldVal) {
-      $(".select2NoTags").select2({
-        placeholder: '選擇商品',
-        width: '100%'
-      });
+    'itemAttrs': {
+      handler:function (val, oldVal) {
+        //$('.bootstrap-multiselect:visible').multiselect();
+        console.log('se');
+      },
+      immediate:true,
     },
 
     // 更新timeago
@@ -180,6 +214,7 @@ var vue = new Vue({
         edit: true,
         name: ''
       });
+      $('.bootstrap-multiselect:visible').multiselect();
     },
 
     // 新增屬性選項

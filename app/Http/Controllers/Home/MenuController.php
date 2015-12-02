@@ -107,10 +107,10 @@ class MenuController extends Controller {
 		$items = [];
 
 		if ($request->has('items_json')) {
-			$items = json_decode($request->input('items_json'), true);
+			$items_json = json_decode($request->input('items_json'), true);
 			$count = 2;
-			$max = count($items) + $count;
-			foreach ($items as $data) {
+			$max = count($items_json) + $count;
+			foreach ($items_json as $data) {
 				$data['status'] = ($data['status'] >= 0) ? $max - $count : -$count;
 				$item = $store->items()->findOrNew($data['id']);
 				$item->fill($data);
@@ -118,11 +118,9 @@ class MenuController extends Controller {
 				$items[] = $item->id;
 				$count++;
 			}
+			$store->items()->whereNotIn('id', $items)->delete();
+			flash()->success('修改菜單成功');
 		}
-
-		$store->items()->whereNotIn('id', $items)->delete();
-
-		flash()->success('修改菜單成功');
 		return redirect(route('menu.edit', $store->id));
 	}
 

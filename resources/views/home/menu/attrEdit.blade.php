@@ -51,11 +51,11 @@
                     <div class="form-group">
                       <label class="col-sm-2">套用的商品</label>
                       <div class="col-sm-10">
-                    {!! Form::select('attr[@{{ itemAttr.id }}][item_id][]', $itemList, null, ['class' => 'form-control select2NoTags', 'multiple', 'v-model' => 'itemAttr.item_id']) !!}
+                    {!! Form::select('attr[@{{ itemAttr.id }}][item_id][]', $itemList, null, ['class' => 'form-control bootstrap-multiselect', 'multiple', 'v-model' => 'itemAttr.item_id']) !!}
                       </div>
                     </div>
                     <input type="hidden" name="attr[@{{ itemAttr.id }}][attr_id]" v-model="itemAttr.id" />
-                    <input class="btn btn-default" type="button" value="確定" @click="editDone(itemAttr)" />
+                    <input class="btn btn-default" type="button" value="確定" @click="itemAttr.edit = false" />
                   </td>
                 </tr>
               </tbody>

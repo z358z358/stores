@@ -15,6 +15,7 @@
       }, "json");
       return false;
     });
+    $('.bootstrap-multiselect').multiselect();
 	});
 </script>
 

@@ -29,6 +29,7 @@ elixir(function(mix) {
     	'libs/landing-page.css',
         'libs/select2.css',
         'libs/sb-admin-2.css',
+        'libs/bootstrap-multiselect.css',
         
         'my.css',
     ], 'public/css/all.css', 'resources/assets/css')
@@ -37,7 +38,8 @@ elixir(function(mix) {
     	'libs/jquery.js',
     	'libs/bootstrap.js',
         'libs/jquery.timeago.js',
-        'libs/select2.js',    
+        //'libs/select2.js',   
+        'libs/bootstrap-multiselect.js',
         'libs/sb-admin-2.js',        
         'libs/jquery-ui.js',
         'libs/jquery.tmpl.js',
@@ -46,7 +48,7 @@ elixir(function(mix) {
         'libs/vue.1.08.js',
 
         'google-map_my.js',
-        'select2_my.js',
+        //'select2_my.js',
         //'item_my.js',
         //'order_my.js',
     ], 'public/js/all.js', 'resources/assets/js')
