@@ -1,24 +1,6 @@
 <!-- footer -->
 <script src="{{ url( elixir('js/all.js') ) }}" type="text/javascript"></script>
 
-<script type="text/javascript">
-  var __act = ("string" == typeof __act) ? __act : "";
-	$(function() {
-		$('#flash-overlay-modal').modal();
-    jQuery.timeago.settings.localeTitle = true;
-		$(".timeago").timeago();
-    $(".bind-form").on("submit", ".form-ajax", function(e){
-      e.preventDefault();
-      var form = $(this);
-      $.post(form.attr("action"), form.serialize(), function(data){
-        vue.ajax_result(data);
-      }, "json");
-      return false;
-    });
-    $('.bootstrap-multiselect').multiselect();
-	});
-</script>
-
 <!-- fb -->
 <div id="fb-root"></div>
 <script>(function(d, s, id) {

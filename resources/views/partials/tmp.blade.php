@@ -1,65 +1,32 @@
 @if (isset($useFirebase))
-  <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-  <script type="text/javascript">
+<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+<script type="text/javascript">
   var useFirebase = true;
-  </script>
+</script>
 @endif
 
-todo:解jquery rebind bug
-http://forum.vuejs.org/topic/718/how-to-rebind-jquery-when-array-push/2
-you can use directive
-<div id="item">
-    <div v-for="item in items">
-    <select class="form-control bootstrap-multiselect" v-select="item.options" multiple="multiple" name="test" >
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-    </select>
-    </div>
-    <button @click="newItem">new item</button>
-    <pre>{{ $data | json}}</pre>
-</div>
-
-Vue.directive('select',{
-    twoWay: true,
-    bind:function(){
-        var self=this;
-        $(this.el).change(function () {
-            console.log($(this).val());
-            self.set($(this).val());
-        }).multiselect();
-    },
-    update:function(newVal,oldVal){
-        $(this.el).val(newVal).trigger('change');
-    },
-    unbind:function(){
-        $(this.el).multiselect('destroy');
-    }
-});
-
 <script type="text/javascript">
-Vue.component('item-table', {
-  template: '#item-table-template',
-  props: ['items', 'onOffType'],
+  Vue.component('item-table', {
+    template: '#item-table-template',
+    props: ['items', 'onOffType'],
 
-  data:function(){},
+    data:function(){},
 
-  computed:{
-    _items:function(){
-      var that = this;
-      var tmp = this.items.filter(function(item){
-        return that.onOffType == 'on' && item.status >= 0 || that.onOffType == 'off' && item.status < 0;
-      })
-      return tmp.sort( function(a,b){return that.isOn ? (a.status-b.status) :b.status-a.status } );
+    computed:{
+      _items:function(){
+        var that = this;
+        var tmp = this.items.filter(function(item){
+          return that.onOffType == 'on' && item.status >= 0 || that.onOffType == 'off' && item.status < 0;
+        })
+        return tmp.sort( function(a,b){return that.isOn ? (a.status-b.status) :b.status-a.status } );
+      },
+
+      isOn:function(){
+        return this.onOffType == 'on';
+      }
     },
 
-    isOn:function(){
-      return this.onOffType == 'on';
-    }
-  },
-
-  methods:{
+    methods:{
     // 新增商品
     newItem: function () {
       this.items.push({
@@ -106,6 +73,7 @@ var demarcation = demarcation || '|';
 var order_cookie_name = order_cookie_name || '';
 var chose = chose || $.cookie(order_cookie_name);
 var orders = orders || [];
+var multiselectConfig = {allSelectedText:'全選',nonSelectedText:'未選',nSelectedText:'已選'};
 chose = (Object.prototype.toString.call(chose) === '[object Object]') ? chose : {};
 // 完成頁 刪掉舊cookie
 if(order_cookie_name && orders.length) $.removeCookie(order_cookie_name, { path: '/' });
@@ -164,27 +132,25 @@ var vue = new Vue({
   },
 
   computed: {
-      info: function() {
-        var info = {"price": 0, "count": 0, "kind": 0};
-        var chose = this.chose;
-        for (var key in chose) {
-          info.price += chose[key]["price"]*chose[key]["count"];
-          info.count += chose[key]["count"];
-          info.kind++;
-        }
-
-        return info;
+    info: function() {
+      var info = {"price": 0, "count": 0, "kind": 0};
+      var chose = this.chose;
+      for (var key in chose) {
+        info.price += chose[key]["price"]*chose[key]["count"];
+        info.count += chose[key]["count"];
+        info.kind++;
       }
+
+      return info;
+    }
   },
 
   watch: {
     // 更新select2
-    'itemAttrs': {
-      handler:function (val, oldVal) {
-        //$('.bootstrap-multiselect:visible').multiselect();
-        console.log('se');
-      },
-      immediate:true,
+    'itemAttrs': function() {
+      this.$nextTick(function () {
+        $('.bootstrap-multiselect').multiselect(multiselectConfig);
+      });
     },
 
     // 更新timeago
@@ -194,6 +160,7 @@ var vue = new Vue({
   },
 
   ready: function () {
+    $('.bootstrap-multiselect').multiselect(multiselectConfig);
     $( ".sortable" ).sortable();
     $( ".sortable" ).disableSelection();
     this.checkChose();
@@ -214,7 +181,6 @@ var vue = new Vue({
         edit: true,
         name: ''
       });
-      $('.bootstrap-multiselect:visible').multiselect();
     },
 
     // 新增屬性選項
@@ -281,13 +247,13 @@ var vue = new Vue({
     addChoseCount: function (item, count) {
       var choseKey = (typeof item == "string") ? item : item.choseKey;
       var chose = this.chose[choseKey] || {
-          id: item.id,
-          price: item.totalPrice,
-          name: item.fullName,
-          simpleName: item.name,
-          count: 0,
-          status: item.status
-        };
+        id: item.id,
+        price: item.totalPrice,
+        name: item.fullName,
+        simpleName: item.name,
+        count: 0,
+        status: item.status
+      };
 
       if(count == 0){
         chose['count'] = 0;
@@ -330,11 +296,11 @@ var vue = new Vue({
 
     ajax_result: function(data){
       if(data['msg']){
-         vue.$set('msg', data['msg']);
-      }
-    }
+       vue.$set('msg', data['msg']);
+     }
+   }
 
-  }
+ }
 });
 
 if(typeof useFirebase != 'undefined'){
@@ -347,4 +313,18 @@ if(typeof useFirebase != 'undefined'){
   script.src = "https://cdn.firebase.com/js/client/2.3.1/firebase.js";
   document.getElementsByTagName('head')[0].appendChild(script);
 }
+
+$(function() {
+  $('#flash-overlay-modal').modal();
+  jQuery.timeago.settings.localeTitle = true;
+  $(".timeago").timeago();
+  $(".bind-form").on("submit", ".form-ajax", function(e){
+    e.preventDefault();
+    var form = $(this);
+    $.post(form.attr("action"), form.serialize(), function(data){
+      vue.ajax_result(data);
+    }, "json");
+    return false;
+  });
+});
 </script>
